@@ -1,0 +1,13 @@
+{
+  "users": [
+    {
+      "uuid": "057dc6d7-0634-44f9-83b4-ff848a88c1ab",
+      "username": "admin",
+      "name": "Administrator",
+      "password": "admin",
+      "email": "default_admin@io.com",
+      "country": "US",
+      "admin": true
+    }
+  ]
+}

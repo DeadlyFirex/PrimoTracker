@@ -1,0 +1,53 @@
+{
+  "table_names": {
+    "users": "users",
+    "uuid_index": "uuid_index",
+    "table_index": "table_index",
+    "audit_log": "audit_log",
+    "audit_actions": "audit_actions",
+    "transaction_log":  "transaction_log",
+    "transaction_types":  "transaction_types",
+    "source_types": "source_types",
+    "material_types": "material_types",
+    "exchange_types": "exchange_types",
+    "usage_types": "usage_types",
+    "wish_log": "wish_log",
+    "wish_types": "wish_types"
+  },
+  "audit": {
+    "priorities": [
+      "DEBUG",
+      "INFO",
+      "LOW",
+      "MEDIUM",
+      "HIGH",
+      "CRITICAL",
+      "ERROR"
+    ]
+  },
+  "field_init": {
+    "users": {
+      "tags": [],
+      "balance": {
+        "PRIMOGEMS": 0,
+        "GENESIS_CRYSTALS": 0,
+        "STARDUST": 0,
+        "STARGLITTER": 0,
+        "ACQUAINT_FATE": 0,
+        "INTERTWINED_FATE": 0
+      },
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE",
+        "LOGIN",
+        "LOGOUT",
+        "AUTHORIZE"
+      ]
+    }
+  },
+  "uuid": {
+    "max_attempts": 100
+  }
+}

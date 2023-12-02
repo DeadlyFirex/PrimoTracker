@@ -1,0 +1,45 @@
+{
+  "application": {
+    "name": "YourApp",
+    "debug": true
+  },
+  "server": {
+    "host": "localhost",
+    "port": 8000,
+    "version": "/v1/"
+  },
+  "security": {
+    "character_list": "abcd-$.01234567890",
+    "secret_length": 16,
+    "activity_timeout": 3600
+  },
+  "ratelimiting": {
+    "default": "5 per second",
+    "authorization": "2 per second"
+  },
+  "configuration": {
+    "game_path": "./configuration/game.json",
+    "database_path": "./configuration/database.json"
+  },
+  "initialization": {
+    "audit_path": "./templates/static/database/audit.json",
+    "index_path": "./templates/static/database/index.json",
+    "transactions_path": "./templates/static/database/transactions.json",
+    "users_path": "./templates/static/database/users.json",
+    "wishes_path": "./templates/static/database/wishes.json"
+  },
+  "database": {
+    "local": true,
+    "type": "your_database_type",
+    "host": "your_database_host",
+    "port": 3306,
+    "name": "your_database_name",
+    "credentials": {
+      "username": "your_username",
+      "password": "your_password"
+    },
+    "tables": {
+      "uuid_max_attempts": 100
+    }
+  }
+}

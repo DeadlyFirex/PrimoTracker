@@ -1,0 +1,77 @@
+{
+  "uuid_index": [
+    {
+      "uuid": "057dc6d7-0634-44f9-83b4-ff848a88c1ab",
+      "table_name": "users",
+      "table_uuid": "6a07a125-bccc-4969-99f8-4326b743644a"
+    }
+  ],
+  "table_index": [
+    {
+      "uuid": "6a07a125-bccc-4969-99f8-4326b743644a",
+      "name": "users",
+      "model": "User"
+    },
+    {
+      "uuid": "798fed05-ac96-4a0c-a0d6-e21278a809a9",
+      "name": "uuid_index",
+      "model": "UUIDIndex"
+    },
+    {
+      "uuid": "81dbc998-ee42-4382-acff-c7ab0346e112",
+      "name": "table_index",
+      "model": "TableIndex"
+    },
+    {
+      "uuid": "ee025aa6-7d87-48d7-8154-d631efd3fb76",
+      "name": "audit_log",
+      "model": "Audit"
+    },
+    {
+      "uuid": "9af04aa9-820e-4d8d-b81f-bedb6f2214f8",
+      "name": "audit_actions",
+      "model": "AuditAction"
+    },
+    {
+      "uuid": "7763b0d9-cdb7-4d6a-966a-12c0cec2c205",
+      "name": "transaction_log",
+      "model": "Transaction"
+    },
+    {
+      "uuid": "0d297c5a-e788-46c5-b158-678cb78c7042",
+      "name": "transaction_types",
+      "model": "TransactionType"
+    },
+
+    {
+      "uuid": "eb3127fe-64ce-4b6f-9db3-fc37f1a03805",
+      "name": "source_types",
+      "model": "SourceType"
+    },
+    {
+      "uuid": "ccfaab67-8de1-4599-a54a-bb8e749810bf",
+      "name": "material_types",
+      "model": "MaterialType"
+    },
+    {
+      "uuid": "a0aa602e-bd0f-40cc-a244-1f41157c1be2",
+      "name": "exchange_types",
+      "model": "ExchangeType"
+    },
+    {
+      "uuid": "edbfd82e-72bd-4438-a76f-2fd91ad538d0",
+      "name": "usage_types",
+      "model": "UsageType"
+    },
+    {
+      "uuid": "c290917c-625b-4451-bd59-dbe14b24d212",
+      "name": "wish_log",
+      "model": "Wish"
+    },
+    {
+      "uuid": "24bdbc5e-5111-498e-a884-17e681b14c32",
+      "name": "wish_types",
+      "model": "WishType"
+    }
+  ]
+}

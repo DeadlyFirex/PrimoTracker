@@ -1,0 +1,149 @@
+{
+  "audit_log": [],
+  "audit_actions": [
+    {
+      "name": "CREATE",
+      "priority": "INFO",
+      "default": true,
+      "permission_level": 2,
+      "permissions": [
+        "CREATE",
+        "READ"
+      ]
+    },
+    {
+      "name": "READ",
+      "priority": "INFO",
+      "default": true,
+      "permission_level": 1,
+      "permissions": [
+        "READ"
+      ]
+    },
+    {
+      "name": "UPDATE",
+      "priority": "LOW",
+      "default": true,
+      "permission_level": 3,
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE"
+      ]
+    },
+    {
+      "name": "DELETE",
+      "priority": "LOW",
+      "default": true,
+      "permission_level": 3,
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ]
+    },
+    {
+      "name": "LOGIN",
+      "priority": "INFO",
+      "default": true,
+      "permission_level": 1,
+      "permissions": [
+        "READ",
+        "LOGIN",
+        "LOGOUT"
+      ]
+    },
+    {
+      "name": "LOGOUT",
+      "priority": "INFO",
+      "default": true,
+      "permission_level": 1,
+      "permissions": [
+        "READ",
+        "LOGIN",
+        "LOGOUT"
+      ]
+    },
+    {
+      "name": "AUTHORIZE",
+      "priority": "MEDIUM",
+      "default": true,
+      "permission_level": 1,
+      "permissions": [
+        "AUTHORIZE",
+        "READ"
+      ]
+    },
+    {
+      "name": "SEARCH",
+      "priority": "LOW",
+      "default": false,
+      "permission_level": 4,
+      "permissions": [
+        "READ",
+        "LOGIN",
+        "LOGOUT"
+      ]
+    },
+    {
+      "name": "LIST",
+      "priority": "LOW",
+      "default": false,
+      "permission_level": 4,
+      "permissions": [
+        "READ",
+        "LOGIN",
+        "LOGOUT"
+      ]
+    },
+    {
+      "name": "IMPORT",
+      "priority": "HIGH",
+      "default": false,
+      "permission_level": 5,
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE",
+        "IMPORT"
+      ]
+    },
+    {
+      "name": "EXPORT",
+      "priority": "HIGH",
+      "default": false,
+      "permission_level": 5,
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE",
+        "EXPORT"
+      ]
+    },
+    {
+      "name": "DOWNLOAD",
+      "priority": "MEDIUM",
+      "default": false,
+      "permission_level": 3,
+      "permissions": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE",
+        "DOWNLOAD"
+      ]
+    },
+    {
+      "name": "ADMIN",
+      "priority": "LOW",
+      "default": false,
+      "permission_level": 6,
+      "permissions": [
+        "ADMIN"
+      ]
+    }
+  ]
+}
