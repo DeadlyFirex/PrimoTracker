@@ -44,5 +44,5 @@ jobs:
       run: |
         export FLASK_APP=flaskr:create_app
         export FLASK_ENV=development
-        mv config-sample.json config.json
+        mv config-example.json config.json
         timeout 15 python -m flask run -h 127.0.0.1 -p 8000 || exit $(( $? == 124 ? 0 : $? ))

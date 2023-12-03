@@ -22,12 +22,12 @@
       "user": ["3 per second", "30 per minute"]
     },
     "storage": {
-      "type": "your_storage_type",
-      "host": "your_storage_host",
+      "type": "memory://",
+      "host": "",
       "port": 27017,
       "credentials": {
-        "username": "your_storage_username",
-        "password": "your_storage_password"
+        "username": "user",
+        "password": "user"
       }
     }
   },
@@ -44,13 +44,13 @@
   },
   "database": {
     "local": true,
-    "type": "your_database_type",
-    "host": "your_database_host",
+    "type": "sqlite://",
+    "host": "your_database_host.db",
     "port": 3306,
-    "name": "your_database_name",
+    "name": "YourApp",
     "credentials": {
-      "username": "your_username",
-      "password": "your_password"
+      "username": "user",
+      "password": "user"
     },
     "tables": {
       "uuid_max_attempts": 100
