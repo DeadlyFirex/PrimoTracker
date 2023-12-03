@@ -213,7 +213,7 @@ def user_required():
             from models.user import User
             user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
             if user:
-                user.is_active(source=fn.__name__, address=request.remote_addr)
+                # user.mark_active()
                 return fn(*args, **kwargs)
             else:
                 return Utilities.response(403, "Forbidden, no rights to access resource")

@@ -13,9 +13,23 @@
     "secret_length": 16,
     "activity_timeout": 3600
   },
-  "ratelimiting": {
-    "default": "5 per second",
-    "authorization": "2 per second"
+  "ratelimit": {
+    "enabled": true,
+    "limits": {
+      "default": ["5 per second", "100 per minute"],
+      "admin": ["3 per second", "30 per minute"],
+      "authentication": ["2 per second", "20 per minute"],
+      "user": ["3 per second", "30 per minute"]
+    },
+    "storage": {
+      "type": "your_storage_type",
+      "host": "your_storage_host",
+      "port": 27017,
+      "credentials": {
+        "username": "your_storage_username",
+        "password": "your_storage_password"
+      }
+    }
   },
   "configuration": {
     "game_path": "./configuration/game.json",

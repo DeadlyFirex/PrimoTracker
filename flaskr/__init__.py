@@ -36,23 +36,21 @@ def create_app():
     # TODO: Make every limit configurable
     limiter = Limiter(get_remote_address,
                       app=app,
-                      default_limits=[config.ratelimiting.default],
-                      storage_uri=f"{config.database.type}://{config.database.credentials.username}"
-                                  f":{config.database.credentials.password}@{config.database.host}"
-                                  f":{config.database.port}",
-                      enabled=True,
+                      enabled=config.ratelimit.enabled,
+                      default_limits=config.ratelimit.limits.default,
+                      storage_uri=f"{config.ratelimit.storage.type}://{config.ratelimit.storage.credentials.username}"
+                                  f":{config.ratelimit.storage.credentials.password}@{config.ratelimit.storage.host}"
+                                  f":{config.ratelimit.storage.port}",
                       headers_enabled=True
                       )
 
-    limiter.limit(config.ratelimiting.default)(admin.admin)
-    limiter.limit(config.ratelimiting.authorization)(auth.auth)
-    limiter.limit(config.ratelimiting.default)(generics.generics)
-    limiter.limit(config.ratelimiting.default)(user.user)
-
-    app.register_blueprint(admin.admin)
-    app.register_blueprint(auth.auth)
-    app.register_blueprint(generics.generics)
-    app.register_blueprint(user.user)
+    for limit, endpoint in [(config.ratelimit.limits.admin, admin.admin),
+                            (config.ratelimit.limits.authentication, auth.auth),
+                            (config.ratelimit.limits.default, generics.generics),
+                            (config.ratelimit.limits.user, user.user)]:
+        for counter in limit:
+            limiter.limit(counter)(endpoint)
+        app.register_blueprint(endpoint)
 
     # Register JWT
     JWTManager(app).init_app(app)
@@ -64,16 +62,12 @@ def create_app():
         app.logger.info("Checking for database initialization.")
 
         try:
-            result = (user.User.query.all(), audit.AuditAction.query.all(), index.UUIDIndex.query.all())
+            if any(not table.query.all() for table in [user.User, audit.AuditAction, index.UUIDIndex]):
+                init_db()
+                app.logger.info("Performing new database initialization or repopulating tables.")
         except OperationalError:
             init_db()
             app.logger.info("Performing new database initialization.")
-            return
-        if result in [None, []]:
-            init_db()
-            app.logger.info("Repopulating database tables.")
-            return
-        app.logger.info("Finished checking, no new initialization required.")
 
     first_time_run()
 
