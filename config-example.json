@@ -45,7 +45,7 @@
   "database": {
     "local": true,
     "type": "sqlite://",
-    "host": "your_database_host.db",
+    "host": ":memory:",
     "port": 3306,
     "name": "YourApp",
     "credentials": {
