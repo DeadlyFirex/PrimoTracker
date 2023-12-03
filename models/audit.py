@@ -32,7 +32,7 @@ class Audit(Base):
     severity: str = Column(Enum(*db_config.audit.priorities), nullable=False, default="INFO")
     timestamp: datetime = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    user = relationship("User", back_populates="audit")
+    # user = relationship("User", back_populates="audit")
 
     # @staticmethod
     # def create_entry(db_session: scoped_session, user_uuid: str, action_uuid: int, is_user_action: bool,

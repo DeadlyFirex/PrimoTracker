@@ -46,12 +46,12 @@ class User(Base):
     balance: dict = Column(JSON, nullable=True, default={"balance": db_config.field_init.users.balance._ConfigNode__node_dict})
 
     # TODO: Verify relationships and their functionality
-    transactions = relationship("Transaction", back_populates="user", cascade="all, delete-orphan")
-    audit = relationship("Audit", back_populates="user", cascade="all, delete-orphan")
+    # transactions = relationship("Transaction", back_populates="user", cascade="all, delete-orphan")
+    # audit = relationship("Audit", back_populates="user", cascade="all, delete-orphan")
     # wishes = relationship("WishHistory", back_populates=__related_name1__, cascade="all, delete-orphan")
 
     # Tracking
-    active_until: datetime = Column(DateTime, nullable=True, default=None)
+    active_until: datetime = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     def mark_active(self, db_session: scoped_session):
         self.active_until += timedelta(seconds=config.security.activity_timeout)

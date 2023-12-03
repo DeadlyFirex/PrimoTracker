@@ -11,6 +11,7 @@ from re import match
 
 from services.config import Config
 from datetime import datetime
+from uuid import UUID
 
 config = Config().get()
 
@@ -210,7 +211,7 @@ def user_required():
         def decorator(*args, **kwargs):
             verify_jwt_in_request()
             from models.user import User
-            user = User.query.filter_by(uuid=get_jwt_identity()).first()
+            user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
             if user:
                 user.is_active(source=fn.__name__, address=request.remote_addr)
                 return fn(*args, **kwargs)

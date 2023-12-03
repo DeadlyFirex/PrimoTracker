@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_limiter import Limiter
 from flask_jwt_extended import JWTManager
+from flask_limiter.util import get_remote_address
 from sqlalchemy.exc import OperationalError
 
 from flaskr import admin, auth, generics, user
@@ -8,7 +9,7 @@ from services.config import Config
 from services.database import init_db, url_database
 from services.utilities import Utilities
 
-from os import path, system as os_system
+from os import system as os_system
 
 # Get configuration, create Flask application
 config = Config().get()
@@ -33,11 +34,16 @@ def create_app():
 
     # Configure blueprints/views and ratelimiting
     # TODO: Make every limit configurable
-    limiter = Limiter(app, default_limits=[config.ratelimiting.default],
-                      storage_uri=url_database,
+    limiter = Limiter(get_remote_address,
+                      app=app,
+                      default_limits=[config.ratelimiting.default],
+                      storage_uri=f"{config.database.type}://{config.database.credentials.username}"
+                                  f":{config.database.credentials.password}@{config.database.host}"
+                                  f":{config.database.port}",
                       enabled=True,
                       headers_enabled=True
                       )
+
     limiter.limit(config.ratelimiting.default)(admin.admin)
     limiter.limit(config.ratelimiting.authorization)(auth.auth)
     limiter.limit(config.ratelimiting.default)(generics.generics)
@@ -54,21 +60,22 @@ def create_app():
     # Check database status
     # TODO: Improve this function to be more flexible.
     def first_time_run():
-        from models import user, index, audit, transactions
+        from models import user, index, audit
         app.logger.info("Checking for database initialization.")
+
         try:
-            result = (user.User.query.all(), transactions.TransactionType.query.all(), index.UUIDIndex.query.all())
+            result = (user.User.query.all(), audit.AuditAction.query.all(), index.UUIDIndex.query.all())
         except OperationalError:
             init_db()
             app.logger.info("Performing new database initialization.")
             return
-        if None in result or [] in result:
+        if result in [None, []]:
             init_db()
             app.logger.info("Repopulating database tables.")
             return
         app.logger.info("Finished checking, no new initialization required.")
 
-        first_time_run()
+    first_time_run()
 
     @app.errorhandler(429)
     def ratelimit_handler(e):

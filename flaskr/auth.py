@@ -9,6 +9,7 @@ from services.utilities import Utilities, admin_required, user_required
 
 from datetime import timedelta
 from bcrypt import checkpw
+from uuid import UUID
 
 # Configure blueprint
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -45,7 +46,7 @@ def post_auth_login():
                                      additional_claims={"username": user.username, "admin": user.admin})
     db_session.commit()
 
-    user.is_active(address=request.remote_addr, login=True)
+    user.mark_active(db_session=db_session)
 
     return Utilities.custom_response(200, f"Successfully logged in as {user.username}",
                                      {"login": {"uuid": user.uuid, "token": user.token,
@@ -60,7 +61,7 @@ def get_auth_test():
 
     :return: JSON status response.
     """
-    current_user = User.query.filter_by(uuid=get_jwt_identity()).first()
+    current_user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
 
     if current_user is None:
         return Utilities.response(401, "Unauthorized")

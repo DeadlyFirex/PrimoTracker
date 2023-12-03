@@ -42,7 +42,7 @@ class Transaction(Base):
     exchange_result: str = Column(String(40), ForeignKey(f'{__child2_name__}.name'), nullable=True)
     destination: str = Column(String(40), ForeignKey(f'{__child4_name__}.name'), nullable=True)
 
-    user = relationship("User", back_populates="transactions")
+    # user = relationship("User", back_populates="transactions")
 
     @staticmethod
     def __database_init__(db_session: scoped_session):
