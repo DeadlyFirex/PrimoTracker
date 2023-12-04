@@ -5,7 +5,7 @@ from models.user import User
 
 from services.config import Config
 from services.database import db_session
-from services.utilities import Utilities, admin_required, user_required
+from services.utilities import admin_required, user_required, response, detailed_response, custom_response
 
 from datetime import timedelta
 from bcrypt import checkpw
@@ -34,12 +34,12 @@ def post_auth_login():
             raise ValueError(f"Expected str, instead got {type(password)} for field <password>")
 
     except (AttributeError, ValueError) as e:
-        return Utilities.detailed_response(400, "Bad request, see details.", {"error": e.__str__()})
+        return detailed_response(400, "Bad request, see details.", {"error": e.__str__()})
 
     user = User.query.filter_by(username=username).first()
 
     if user is None or checkpw(password.encode("UTF-8"), user.password.encode("UTF-8")) is False:
-        return Utilities.response(401, "Unauthorized, wrong username/password")
+        return response(401, "Unauthorized, wrong username/password")
 
     lifetime = timedelta(seconds=config.security.token_lifetime)
     user.token = create_access_token(identity=user.uuid, fresh=False, expires_delta=lifetime,
@@ -48,9 +48,9 @@ def post_auth_login():
 
     user.mark_active(db_session=db_session)
 
-    return Utilities.custom_response(200, f"Successfully logged in as {user.username}",
-                                     {"login": {"uuid": user.uuid, "token": user.token,
-                                                "lifetime": lifetime.total_seconds()}})
+    return custom_response(200, f"Successfully logged in as {user.username}",
+                           {"login": {"uuid": user.uuid, "token": user.token,
+                                      "lifetime": lifetime.total_seconds()}})
 
 
 @auth.route("/test", methods=['GET'])
@@ -64,10 +64,10 @@ def get_auth_test():
     current_user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
 
     if current_user is None:
-        return Utilities.response(401, "Unauthorized")
+        return response(401, "Unauthorized")
 
-    return Utilities.custom_response(200, f"Logged in as {current_user.username}",
-                                     {"login": {"uuid": current_user.uuid, "admin": current_user.admin}})
+    return custom_response(200, f"Logged in as {current_user.username}",
+                           {"login": {"uuid": current_user.uuid, "admin": current_user.admin}})
 
 
 @auth.route("/admin/test", methods=['GET'])
@@ -81,7 +81,7 @@ def get_auth_admin_test():
     current_user = User.query.filter_by(uuid=get_jwt_identity()).first()
 
     if current_user is None:
-        return Utilities.response(401, "Unauthorized")
+        return response(401, "Unauthorized")
 
-    return Utilities.custom_response(200, f"Logged in as {current_user.username}",
-                                     {"login": {"uuid": current_user.uuid, "admin": current_user.admin}})
+    return custom_response(200, f"Logged in as {current_user.username}",
+                           {"login": {"uuid": current_user.uuid, "admin": current_user.admin}})

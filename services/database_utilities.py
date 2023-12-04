@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from services.config import Config, ExtendedConfig
+from services.utilities import generate_database_url
 
 from uuid import uuid4
 
@@ -11,10 +12,12 @@ from uuid import uuid4
 config = Config().get()
 db_config = ExtendedConfig(path=config.configuration.database_path).get()
 
-engine = create_engine(f"{config.database.type}://{config.database.credentials.username}"
-                       f":{config.database.credentials.password}@{config.database.host}"
-                       f":{config.database.port}/{config.database.name}")
-db_session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
+
+if config.database.type == "sqlite":
+    from services.database import db_session
+else:
+    engine = create_engine(generate_database_url())
+    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
 
 
 def gen_uuid(table_name=None):

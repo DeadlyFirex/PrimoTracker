@@ -1,7 +1,7 @@
 {
   "application": {
     "name": "YourApp",
-    "debug": true
+    "debug": false
   },
   "server": {
     "host": "localhost",
@@ -15,6 +15,7 @@
   },
   "ratelimit": {
     "enabled": true,
+    "headers": true,
     "limits": {
       "default": ["5 per second", "100 per minute"],
       "admin": ["3 per second", "30 per minute"],
@@ -22,12 +23,12 @@
       "user": ["3 per second", "30 per minute"]
     },
     "storage": {
-      "type": "memory://",
+      "type": "memory",
       "host": "",
       "port": 27017,
       "credentials": {
-        "username": "user",
-        "password": "user"
+        "username": null,
+        "password": null
       }
     }
   },
@@ -43,10 +44,9 @@
     "wishes_path": "./templates/static/database/wishes.json"
   },
   "database": {
-    "local": true,
-    "type": "sqlite://",
-    "host": ":memory:",
-    "port": 3306,
+    "type": "sqlite",
+    "host": "default.sqlite",
+    "port": 0,
     "name": "YourApp",
     "credentials": {
       "username": "user",

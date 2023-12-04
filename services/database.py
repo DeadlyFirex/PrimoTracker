@@ -1,15 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 
 from services.config import Config
+from services.utilities import generate_database_url
+
+from os import remove
+from shutil import copy
 
 # TODO: Verify if the engine properly works
 # TODO: Verify if scoped_session is optimal
 config = Config().get()
-url_database = (f"{config.database.type}://{config.database.credentials.username}"
-                f":{config.database.credentials.password}@{config.database.host}"
-                f":{config.database.port}/{config.database.name}")
+
+url_database = generate_database_url()
 
 engine = create_engine(url_database)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
@@ -24,6 +26,9 @@ def init_db():
                transactions.Transaction, transactions.TransactionType, transactions.SourceType,
                transactions.UsageType, transactions.MaterialType, transactions.ExchangeType, user.User]
 
+    if config.database.type == "sqlite":
+        copy(f"./{config.database.path}", f"./{config.database.path}.bak")
+        remove(f"./{config.database.path}")
     Base.metadata.create_all(bind=engine)
 
     for model in to_init:

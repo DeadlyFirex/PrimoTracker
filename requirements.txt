@@ -4,6 +4,6 @@ SQLAlchemy>=2.0.0
 Flask-SQLAlchemy
 flask-jwt-extended[asymmetric_crypto]
 Flask-Limiter
-pymongo
-bcrypt>=4.1.1
-setuptools>=60.2.1
+bcrypt
+setuptools
+loguru
