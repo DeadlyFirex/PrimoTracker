@@ -27,8 +27,8 @@ def init_db():
                transactions.UsageType, transactions.MaterialType, transactions.ExchangeType, user.User]
 
     if config.database.type == "sqlite":
-        copy(f"./{config.database.path}", f"./{config.database.path}.bak")
-        remove(f"./{config.database.path}")
+        copy(f"./{config.database.host}", f"./{config.database.host}.bak")
+        remove(f"./{config.database.host}")
     Base.metadata.create_all(bind=engine)
 
     for model in to_init:
