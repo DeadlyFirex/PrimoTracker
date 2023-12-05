@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import Blueprint, request
 
 from models.user import User
-from services.database import db_session
+from services.database import database_session
 from services.utilities import (admin_required, generate_secret, detailed_response,
                                 validate_format, custom_response, response)
 
@@ -48,8 +48,8 @@ def post_admin_user_add():
             password=hashpw(raw_password.encode("UTF-8"), gensalt()).decode("UTF-8")
         )
 
-        db_session.add(new_user)
-        db_session.commit()
+        database_session.add(new_user)
+        database_session.commit()
 
     except IntegrityError as error:
         return custom_response(400, f"Bad request, check details for more info",
@@ -78,6 +78,6 @@ def post_admin_user_delete(uuid: str):
     if count < 1:
         return response(404, f"User <{uuid}> not found, unable to delete.")
 
-    db_session.commit()
+    database_session.commit()
 
     return detailed_response(200, f"Successfully deleted {count} user", {"uuid": uuid})

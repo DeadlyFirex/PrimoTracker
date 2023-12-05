@@ -6,10 +6,9 @@ from sqlalchemy.exc import OperationalError
 
 from flaskr import admin, auth, generics, user
 from services.config import Config
-from services.database import init_db
+from services.database import initialize_database
 from services.utilities import generate_secret, generate_database_url, generate_storage_url
 
-from os import remove
 # Get configuration, create Flask application
 config = Config().get()
 
@@ -51,14 +50,21 @@ def create_app():
     # TODO: Improve this function to be more flexible.
     def first_time_run():
         from models import user, index, audit
+        attempted = False
+        if config.database.type == "memory":
+            app.logger.warning("Warning: You are using a memory database. "
+                               "Most functions besides starting will not function properly."
+                               "Do NOT use this in production.")
         app.logger.info("Checking for database initialization.")
 
         try:
             if any(not table.query.all() for table in [user.User, audit.AuditAction, index.UUIDIndex]):
-                init_db()
+                initialize_database()
+                attempted = True
                 app.logger.info("Performing new database initialization or repopulating tables.")
         except OperationalError:
-            init_db()
+            if not attempted:
+                initialize_database()
             app.logger.info("Performing new database initialization.")
 
     first_time_run()

@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity
 from models.user import User
 
 from services.config import Config
-from services.database import db_session
+from services.database import database_session
 from services.utilities import admin_required, user_required, response, detailed_response, custom_response
 
 from datetime import timedelta
@@ -44,9 +44,9 @@ def post_auth_login():
     lifetime = timedelta(seconds=config.security.token_lifetime)
     user.token = create_access_token(identity=user.uuid, fresh=False, expires_delta=lifetime,
                                      additional_claims={"username": user.username, "admin": user.admin})
-    db_session.commit()
+    database_session.commit()
 
-    user.mark_active(db_session=db_session)
+    user.mark_active(session=database_session)
 
     return custom_response(200, f"Successfully logged in as {user.username}",
                            {"login": {"uuid": user.uuid, "token": user.token,

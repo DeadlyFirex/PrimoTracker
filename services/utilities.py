@@ -138,7 +138,7 @@ def validate_format(validation_type: any, value: str) -> Union[bool, ValueError]
 def generate_database_url():
     match config.database.type:
         case "memory":
-            raise IOError("Memory database is not supported yet, instead, use sqlite.")
+            return "sqlite:///:memory:"
         case "sqlite":
             return f"{config.database.type}:///{config.database.host}"
         case _:
