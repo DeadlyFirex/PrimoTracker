@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from services.config import Config
-from services.utilities import Utilities
+from services.utilities import response, detailed_response
 
 # Configure blueprint
 config = Config().get()
@@ -16,7 +16,7 @@ def get_generics_health():
     :return: JSON status response.
     """
 
-    return Utilities.response(200, "ok")
+    return response(200, "ok")
 
 
 @generics.route("/version", methods=['GET'])
@@ -27,7 +27,7 @@ def get_generics_version():
     :return: JSON detailed status response with (link/version) data.
     """
 
-    return Utilities.detailed_response(301, "ok", {"link": config.server.version})
+    return detailed_response(301, "ok", {"link": config.server.version})
 
 
 @generics.route("/ping", methods=['GET'])

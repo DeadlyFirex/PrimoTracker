@@ -6,10 +6,10 @@ from sqlalchemy.exc import OperationalError
 
 from flaskr import admin, auth, generics, user
 from services.config import Config
-from services.database import init_db, url_database
-from services.utilities import Utilities
+from services.database import initialize_database
+from services.utilities import generate_database_url, generate_storage_url
 
-from os import system as os_system
+from secrets import token_hex
 
 # Get configuration, create Flask application
 config = Config().get()
@@ -18,18 +18,13 @@ config = Config().get()
 def create_app():
     app = Flask(config.application.name)
 
-    # Set host configuration
-    os_system(f"set FLASK_RUN_HOST={config.server.host}")
-    os_system(f"set FLASK_RUN_PORT={config.server.port}")
-
     # Setup configuration
     app.config.from_mapping(
         DEBUG=config.application.debug,
-        SECRET_KEY=Utilities.generate_secret(),
-        DATABASE=url_database,
-        SQLALCHEMY_DATABASE_URI=url_database,
-        JWT_SECRET_KEY=Utilities.generate_secret(),
-        RATELIMIT_ENABLED=True
+        SECRET_KEY=token_hex(),
+        DATABASE=generate_database_url(),
+        SQLALCHEMY_DATABASE_URI=generate_database_url(),
+        JWT_SECRET_KEY=token_hex(),
     )
 
     # Configure blueprints/views and ratelimiting
@@ -38,10 +33,8 @@ def create_app():
                       app=app,
                       enabled=config.ratelimit.enabled,
                       default_limits=config.ratelimit.limits.default,
-                      storage_uri=f"{config.ratelimit.storage.type}://{config.ratelimit.storage.credentials.username}"
-                                  f":{config.ratelimit.storage.credentials.password}@{config.ratelimit.storage.host}"
-                                  f":{config.ratelimit.storage.port}",
-                      headers_enabled=True
+                      storage_uri=generate_storage_url(),
+                      headers_enabled=config.ratelimit.headers
                       )
 
     for limit, endpoint in [(config.ratelimit.limits.admin, admin.admin),
@@ -59,25 +52,24 @@ def create_app():
     # TODO: Improve this function to be more flexible.
     def first_time_run():
         from models import user, index, audit
+        attempted = False
+        if config.database.type == "memory":
+            app.logger.warning("Warning: You are using a memory database. "
+                               "Most functions besides starting will not function properly."
+                               "Do NOT use this in production.")
         app.logger.info("Checking for database initialization.")
 
         try:
             if any(not table.query.all() for table in [user.User, audit.AuditAction, index.UUIDIndex]):
-                init_db()
+                initialize_database()
+                attempted = True
                 app.logger.info("Performing new database initialization or repopulating tables.")
         except OperationalError:
-            init_db()
+            if not attempted:
+                initialize_database()
             app.logger.info("Performing new database initialization.")
 
     first_time_run()
-
-    @app.errorhandler(429)
-    def ratelimit_handler(e):
-        return {"status": 429, "message": f"Exceeded ratelimit: {e.description}"}, 429
-
-    @app.errorhandler(422)
-    def ratelimit_handler(e):
-        return {"status": 422, "message": f"Unable to verify token, probably due to restart: {e.description}"}, 422
 
     return app
 

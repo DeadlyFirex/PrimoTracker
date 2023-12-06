@@ -2,6 +2,7 @@
   "audit_log": [],
   "audit_actions": [
     {
+      "uuid": "e26a1e91-58d4-44e9-86ef-059b570a461d",
       "name": "CREATE",
       "priority": "INFO",
       "default": true,
@@ -12,6 +13,7 @@
       ]
     },
     {
+      "uuid": "ef6eab0c-6f45-42e7-a40c-f8536969b8f1",
       "name": "READ",
       "priority": "INFO",
       "default": true,
@@ -21,6 +23,7 @@
       ]
     },
     {
+      "uuid": "cdf244d3-51b6-45d8-8fcb-0cb4cff76d07",
       "name": "UPDATE",
       "priority": "LOW",
       "default": true,
@@ -32,6 +35,7 @@
       ]
     },
     {
+      "uuid": "3843bc5a-8528-4148-affb-5ae4177453fd",
       "name": "DELETE",
       "priority": "LOW",
       "default": true,
@@ -44,6 +48,7 @@
       ]
     },
     {
+      "uuid": "ba3cb0b7-85c6-4ab3-8601-d3953e7f95d7",
       "name": "LOGIN",
       "priority": "INFO",
       "default": true,
@@ -55,6 +60,7 @@
       ]
     },
     {
+      "uuid": "ada77de2-563f-4fc0-84a4-a60f624d6d33",
       "name": "LOGOUT",
       "priority": "INFO",
       "default": true,
@@ -66,6 +72,7 @@
       ]
     },
     {
+      "uuid": "895b97a1-af13-43f9-80f6-7a6517959a0f",
       "name": "AUTHORIZE",
       "priority": "MEDIUM",
       "default": true,
@@ -76,6 +83,7 @@
       ]
     },
     {
+      "uuid": "30abade1-2683-45cc-99e5-c9cb89e40356",
       "name": "SEARCH",
       "priority": "LOW",
       "default": false,
@@ -87,6 +95,7 @@
       ]
     },
     {
+      "uuid": "f7c52931-c4b8-4327-b8fa-747c18c9b3b1",
       "name": "LIST",
       "priority": "LOW",
       "default": false,
@@ -98,6 +107,7 @@
       ]
     },
     {
+      "uuid": "80cbb04a-6381-4b0d-b4b1-9cb355967dca",
       "name": "IMPORT",
       "priority": "HIGH",
       "default": false,
@@ -111,6 +121,7 @@
       ]
     },
     {
+      "uuid": "7fb21697-98e9-4a32-b1ca-7a298e748ef9",
       "name": "EXPORT",
       "priority": "HIGH",
       "default": false,
@@ -124,6 +135,7 @@
       ]
     },
     {
+      "uuid": "6f875e3c-adb9-4d65-871c-c50c2a19118b",
       "name": "DOWNLOAD",
       "priority": "MEDIUM",
       "default": false,
@@ -137,6 +149,7 @@
       ]
     },
     {
+      "uuid": "65fd5906-e7a9-43bb-9d5f-dfe271a4b773",
       "name": "ADMIN",
       "priority": "LOW",
       "default": false,

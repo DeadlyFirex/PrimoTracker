@@ -1,7 +1,7 @@
 {
   "application": {
     "name": "YourApp",
-    "debug": true
+    "debug": false
   },
   "server": {
     "host": "localhost",
@@ -9,12 +9,12 @@
     "version": "/v1/"
   },
   "security": {
-    "character_list": "abcd-$.01234567890",
-    "secret_length": 16,
-    "activity_timeout": 3600
+    "activity_timeout": 3600,
+    "token_lifetime": 54200
   },
   "ratelimit": {
     "enabled": true,
+    "headers": true,
     "limits": {
       "default": ["5 per second", "100 per minute"],
       "admin": ["3 per second", "30 per minute"],
@@ -22,12 +22,12 @@
       "user": ["3 per second", "30 per minute"]
     },
     "storage": {
-      "type": "your_storage_type",
-      "host": "your_storage_host",
+      "type": "memory",
+      "host": "",
       "port": 27017,
       "credentials": {
-        "username": "your_storage_username",
-        "password": "your_storage_password"
+        "username": null,
+        "password": null
       }
     }
   },
@@ -43,14 +43,13 @@
     "wishes_path": "./templates/static/database/wishes.json"
   },
   "database": {
-    "local": true,
-    "type": "your_database_type",
-    "host": "your_database_host",
-    "port": 3306,
-    "name": "your_database_name",
+    "type": "sqlite",
+    "host": "default.sqlite",
+    "port": 0,
+    "name": "YourApp",
     "credentials": {
-      "username": "your_username",
-      "password": "your_password"
+      "username": "user",
+      "password": "user"
     },
     "tables": {
       "uuid_max_attempts": 100

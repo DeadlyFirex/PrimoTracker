@@ -2,6 +2,7 @@
   "transaction_log": [],
   "transaction_types": [
     {
+      "uuid": "aca470de-7d04-43aa-9f2b-044a4bd8ef22",
       "name": "RECEIVE",
       "description": "Receive a material into your wallet from a source.",
       "uses": [
@@ -10,6 +11,7 @@
       ]
     },
     {
+      "uuid": "bdc1d9e5-d081-47fb-b245-f5209e722292",
       "name": "EXCHANGE",
       "description": "Exchange a material for another material.",
       "uses": [
@@ -19,6 +21,7 @@
       ]
     },
     {
+      "uuid": "4fdfea09-07fe-4d6a-9f6d-6fd75a4ea983",
       "name": "USE",
       "description": "Use a material for wishing on banners.",
       "uses": [
@@ -29,6 +32,7 @@
   ],
   "source_types": [
     {
+      "uuid": "89dc03e3-2c66-44c8-8f2d-85309d97ec64",
       "name": "PURCHASES",
       "clean_name": "Purchases",
       "description": "Top-ups are purchases made in the game to obtain Genesis Crystals.",
@@ -42,6 +46,7 @@
       ]
     },
     {
+      "uuid": "ee5d613b-2c8c-4939-a00f-6ba67cff023d",
       "name": "COMMISSIONS",
       "clean_name": "Commissions",
       "description": "Commissions are daily tasks that the player may complete to obtain rewards.",
@@ -55,6 +60,7 @@
       ]
     },
     {
+      "uuid": "f1dddcd6-42e7-4e43-a1e1-20b240542085",
       "name": "BLESSING_OF_THE_WELKIN_MOON",
       "clean_name": "Blessing of the Welkin Moon",
       "description": "Blessing of the Welkin Moon is a premium system that rewards players by logging in daily.",
@@ -69,6 +75,7 @@
       ]
     },
     {
+      "uuid": "6d5b0a07-9689-4069-9035-5c254ffb4285",
       "name": "BATTLE_PASS",
       "clean_name": "Battle Pass",
       "description": "Battle Pass is a system that allows players to obtain rewards by completing challenges.",
@@ -82,6 +89,7 @@
       ]
     },
     {
+      "uuid": "bb3fd190-195e-4a1f-9f7b-61b80984e97f",
       "name": "SPIRAL_ABYSS",
       "clean_name": "Spiral Abyss",
       "description": "Spiral Abyss is a special type of domain where players defeat enemies and try challenges.",
@@ -95,6 +103,7 @@
       ]
     },
     {
+      "uuid": "8795c2de-3062-4246-95fb-46f12ac401a1",
       "name": "EVENTS",
       "clean_name": "Events",
       "description": "Primogems obtained through events",
@@ -110,6 +119,7 @@
       ]
     },
     {
+      "uuid": "933bb2fd-08b4-4e6a-b79d-d75e26a49f71",
       "name": "ADVENTURE_RANK",
       "clean_name": "Adventure Rank",
       "description": "Adventure Rank is a system that increases based on the player's experience.",
@@ -124,6 +134,7 @@
       ]
     },
     {
+      "uuid": "fa38dfa4-e7d0-48dd-bbfc-0aa83dc80a4f",
       "name": "ACHIEVEMENTS",
       "clean_name": "Achievements",
       "description": "Achievements are task or challenges that the player may complete to obtain rewards.",
@@ -137,6 +148,7 @@
       ]
     },
     {
+      "uuid": "20d72f40-0e92-4a47-9e8d-2db0449c6984",
       "name": "CHECK_IN",
       "clean_name": "Check-In",
       "description": "Check-In is a system that allows players to obtain rewards by logging in daily.",
@@ -150,6 +162,7 @@
       ]
     },
     {
+      "uuid": "f9dbbcc0-2410-423d-897d-93cabea706bc",
       "name": "TRUST_RANK",
       "clean_name": "Trust Rank",
       "description": "Trust Rank is a system within the Serenitea Pot that allows players to obtain rewards.",
@@ -163,6 +176,7 @@
       ]
     },
     {
+      "uuid": "ac1fe27f-11e6-42de-b682-84f69edb8df9",
       "name": "PROMO_CODES",
       "clean_name": "Promo Codes",
       "description": "Promo Codes are limited-time codes that can be redeemed in exchange for rewards.",
@@ -176,6 +190,7 @@
       ]
     },
     {
+      "uuid": "8995242d-3c96-4dc7-bfb7-333aea099d87",
       "name": "MAIL",
       "clean_name": "Mail",
       "description": "Mail is a system that allows players to receive messages from players and the developer.",
@@ -191,6 +206,7 @@
       ]
     },
     {
+      "uuid": "a99c8bcc-4db5-457a-9a30-b82902194352",
       "name": "QUESTS",
       "clean_name": "Quests",
       "description": "Quests are series of tasks that the player may complete to obtain rewards.",
@@ -206,6 +222,7 @@
       ]
     },
     {
+      "uuid": "7f62a167-2ad1-4e11-b05b-d0c0852987be",
       "name": "TUTORIALS",
       "clean_name": "Tutorials",
       "description": "Tutorials are a series of gameplay instructions that introduce new game mechanics.",
@@ -219,6 +236,7 @@
       ]
     },
     {
+      "uuid": "6e1b1f19-1a88-47b7-84fe-bcb645c0294b",
       "name": "DISCOVERY",
       "clean_name": "Discovery",
       "description": "Discovery refers to the act of discovering Domains, Waypoints and Statues of Teyvat.",
@@ -232,6 +250,7 @@
       ]
     },
     {
+      "uuid": "266a2949-504c-47d3-92ad-1653878893e9",
       "name": "CHESTS",
       "clean_name": "Chests",
       "description": "Chests are objects that can be found all throughout Teyvat.",
@@ -245,6 +264,7 @@
       ]
     },
     {
+      "uuid": "c02ea23b-ac45-4d1c-91fe-27f38f46f568",
       "name": "DOMAINS",
       "clean_name": "Domains",
       "description": "Domains are special areas that allow the player to test their skills against enemies.",
@@ -258,6 +278,7 @@
       ]
     },
     {
+      "uuid": "cfed1f99-cd5e-4d8e-9a59-fb2959ace499",
       "name": "STATUE_OF_THE_SEVEN",
       "clean_name": "Statue of The Seven",
       "description": "Statues of The Seven are structures found around all of Teyvat.",
@@ -271,6 +292,7 @@
       ]
     },
     {
+      "uuid": "1c686077-8d0a-4ba8-946b-a2e79caa8ace",
       "name": "ADVENTURER_HANDBOOK",
       "clean_name": "Adventurer Handbook",
       "description": "The Adventurer Handbook is a book, tracks achievements and progress and offers rewards.",
@@ -286,6 +308,7 @@
       ]
     },
     {
+      "uuid": "5b585871-202e-4e83-99b7-7611f6941825",
       "name": "FROSTBEARING_TREE",
       "clean_name": "Frostbearing Tree",
       "description": "The Frostbearing Tree is an offering system and point of interest located in Dragonspine.",
@@ -300,6 +323,7 @@
       ]
     },
     {
+      "uuid": "42575895-d5fa-4071-9f02-881532461b5b",
       "name": "LUMENSTONE_ASCENSION",
       "clean_name": "Lumenstone Ascension",
       "description": "The Lumenstone system is an offering system based in the The Chasm, Liyue.",
@@ -314,6 +338,7 @@
       ]
     },
     {
+      "uuid": "9430c721-f39e-400e-af14-c193952c5a0b",
       "name": "SACRED_SAKURA",
       "clean_name": "Sacred Sakura",
       "description": "The Sacred Sakura is an offering system and point of interest located in Narukami Island.",
@@ -328,6 +353,7 @@
       ]
     },
     {
+      "uuid": "2cee0399-026e-4788-a377-d38bb6814967",
       "name": "TREE_OF_DREAMS",
       "clean_name": "Tree of Dreams",
       "description": "The Tree of Dreams is an offering system and point of interest located in Vanarana, Sumeru.",
@@ -342,6 +368,7 @@
       ]
     },
     {
+      "uuid": "ff815ad7-a455-40ce-bb67-e4e87ddd8119",
       "name": "AMRITA_POOL",
       "clean_name": "Amrita Pool",
       "description": "The Amrita Pool is an offering system and point of interest located in Vourukasha Oasis.",
@@ -355,6 +382,7 @@
       ]
     },
     {
+      "uuid": "185e6e23-de96-43fd-8628-3d81d0cc4766",
       "name": "FOUNTAIN_OF_LUCINE",
       "clean_name": "Fountain of Lucine",
       "description": "The Fountain of Lucine is an offering system located in the Court of Fontaine.",
@@ -369,6 +397,7 @@
       ]
     },
     {
+      "uuid": "3bae83e9-3a21-4aa3-9b32-d7e0467de38a",
       "name": "CHARACTER_ASCENSION",
       "clean_name": "Character Ascension",
       "description": "Character Ascension is a system that allows players to level up their characters.",
@@ -382,6 +411,7 @@
       ]
     },
     {
+      "uuid": "2ca87c81-c159-4968-93c6-c2a95ce59e6d",
       "name": "SURVEYS",
       "clean_name": "Surveys",
       "description": "Surveys are questionnaires completed to obtain rewards.",
@@ -395,6 +425,7 @@
       ]
     },
     {
+      "uuid": "6b069108-4d56-4d50-8fc6-2ccaab4d2a7d",
       "name": "OTHER",
       "clean_name": "Other",
       "description": "Materials obtained through other means",
@@ -412,52 +443,11 @@
   ],
   "material_types": [
     {
+      "uuid": "23c64d0e-742a-4d86-a2fe-ac751411bd16",
       "name": "PRIMOGEMS",
       "clean_name": "Primogems",
       "description": "Primogems are a premium currency in Genshin Impact.",
       "sources": [
-        "COMMISSIONS",
-        "BLESSING_OF_THE_WELKIN_MOON",
-        "BATTLE_PASS",
-        "SPIRAL_ABYSS",
-        "EVENTS",
-        "ADVENTURE_RANK",
-        "ACHIEVEMENTS",
-        "CHECK_IN",
-        "TRUST_RANK",
-        "PROMO_CODES",
-        "MAIL",
-        "QUESTS",
-        "TUTORIALS",
-        "DISCOVERY",
-        "CHESTS",
-        "DOMAINS",
-        "STATUE_OF_THE_SEVEN",
-        "ADVENTURER_HANDBOOK",
-        "AMRITA_POOL",
-        "SURVEYS",
-        "OTHER",
-        "COMMISSIONS",
-        "BLESSING_OF_THE_WELKIN_MOON",
-        "BATTLE_PASS",
-        "SPIRAL_ABYSS",
-        "EVENTS",
-        "ADVENTURE_RANK",
-        "ACHIEVEMENTS",
-        "CHECK_IN",
-        "TRUST_RANK",
-        "PROMO_CODES",
-        "MAIL",
-        "QUESTS",
-        "TUTORIALS",
-        "DISCOVERY",
-        "CHESTS",
-        "DOMAINS",
-        "STATUE_OF_THE_SEVEN",
-        "ADVENTURER_HANDBOOK",
-        "AMRITA_POOL",
-        "SURVEYS",
-        "OTHER",
         "COMMISSIONS",
         "BLESSING_OF_THE_WELKIN_MOON",
         "BATTLE_PASS",
@@ -489,14 +479,11 @@
       "usages": []
     },
     {
+      "uuid": "954410e1-388d-4ec7-abc6-339bca2a2605",
       "name": "GENESIS_CRYSTALS",
       "clean_name": "Genesis Crystals",
       "description": "Genesis Crystals are the premium currency in Genshin Impact.",
       "sources": [
-        "PURCHASES",
-        "BLESSING_OF_THE_WELKIN_MOON",
-        "PURCHASES",
-        "BLESSING_OF_THE_WELKIN_MOON",
         "PURCHASES",
         "BLESSING_OF_THE_WELKIN_MOON"
       ],
@@ -507,34 +494,11 @@
       "usages": []
     },
     {
+      "uuid": "41b30bb7-51f3-4364-a2ed-cfa2381c3b55",
       "name": "ACQUAINT_FATE",
       "clean_name": "Acquaint Fate",
       "description": "Acquaint Fate is a Fate item used to perform wishes.",
       "sources": [
-        "EVENTS",
-        "ADVENTURE_RANK",
-        "MAIL",
-        "QUESTS",
-        "ADVENTURER_HANDBOOK",
-        "FROSTBEARING_TREE",
-        "LUMENSTONE_ASCENSION",
-        "SACRED_SAKURA",
-        "TREE_OF_DREAMS",
-        "FOUNTAIN_OF_LUCINE",
-        "CHARACTER_ASCENSION",
-        "OTHER",
-        "EVENTS",
-        "ADVENTURE_RANK",
-        "MAIL",
-        "QUESTS",
-        "ADVENTURER_HANDBOOK",
-        "FROSTBEARING_TREE",
-        "LUMENSTONE_ASCENSION",
-        "SACRED_SAKURA",
-        "TREE_OF_DREAMS",
-        "FOUNTAIN_OF_LUCINE",
-        "CHARACTER_ASCENSION",
-        "OTHER",
         "EVENTS",
         "ADVENTURE_RANK",
         "MAIL",
@@ -559,30 +523,11 @@
       ]
     },
     {
+      "uuid": "8924d65f-096d-4b89-a779-c9afe25dcb03",
       "name": "INTERTWINED_FATE",
       "clean_name": "Intertwined Fate",
       "description": "Intertwined Fate is a Fate item used to perform wishes.",
       "sources": [
-        "EVENTS",
-        "MAIL",
-        "QUESTS",
-        "ADVENTURER_HANDBOOK",
-        "FROSTBEARING_TREE",
-        "LUMENSTONE_ASCENSION",
-        "SACRED_SAKURA",
-        "TREE_OF_DREAMS",
-        "FOUNTAIN_OF_LUCINE",
-        "OTHER",
-        "EVENTS",
-        "MAIL",
-        "QUESTS",
-        "ADVENTURER_HANDBOOK",
-        "FROSTBEARING_TREE",
-        "LUMENSTONE_ASCENSION",
-        "SACRED_SAKURA",
-        "TREE_OF_DREAMS",
-        "FOUNTAIN_OF_LUCINE",
-        "OTHER",
         "EVENTS",
         "MAIL",
         "QUESTS",
@@ -607,6 +552,7 @@
   ],
   "exchange_types": [
     {
+      "uuid": "f8e2e0b1-7fe0-43f2-95a9-c5b99bb0f540",
       "name": "GENESIS_CRYSTALS_EXCHANGE",
       "clean_name": "Genesis Crystals Exchange",
       "description": "Genesis Crystals are the premium currency in Genshin Impact.",
@@ -618,6 +564,7 @@
       ]
     },
     {
+      "uuid": "09e26cfb-ae56-47ea-8467-3f2aa8ff0e6b",
       "name": "PRIMOGEMS_EXCHANGE",
       "clean_name": "Primogem Exchange",
       "description": "Primogems are the premium currency in Genshin Impact.",
@@ -632,6 +579,7 @@
       ]
     },
     {
+      "uuid": "a7fb3238-507c-4717-949e-7f0a08dc1b6c",
       "name": "STARGLITTER_EXCHANGE",
       "clean_name": "Starglitter Exchange",
       "description": "Starglitter is a currency obtained by exchanging Primogems in Paimon's Bargains.",
@@ -644,6 +592,7 @@
       ]
     },
     {
+      "uuid": "f2620dc5-6c28-4b9f-84ad-1055763f3d3c",
       "name": "STARDUST_EXCHANGE",
       "clean_name": "Stardust Exchange",
       "description": "Stardust is a currency obtained by exchanging Primogems in Paimon's Bargains.",
@@ -658,6 +607,7 @@
   ],
   "usage_types": [
     {
+      "uuid": "8381cb6b-d6a7-45db-be95-bf5381618b87",
       "name": "INTERTWINED_FATE_WISH",
       "clean_name": "Intertwined Fate Wish",
       "description": "Intertwined Fate is a Fate used to wish in the Character Event Banner and Weapon Event Banner.",
@@ -672,6 +622,7 @@
       ]
     },
     {
+      "uuid": "11425690-dc1f-40f4-9d1f-2f77c67c626e",
       "name": "ACQUAINT_FATE_WISH",
       "clean_name": "Acquaint Fate Wish",
       "description": "Acquaint Fate is a Fate used to wish in the Standard Banner and Beginner Banner.",
