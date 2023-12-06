@@ -9,6 +9,7 @@ from services.utilities import (admin_required, generate_secret, detailed_respon
                                 validate_format, custom_response, response)
 
 from markupsafe import escape
+from secrets import token_hex
 
 # Configure blueprint
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -39,7 +40,7 @@ def post_admin_user_add():
     except (AttributeError, ValueError) as e:
         return detailed_response(400, "Bad request, see details.", {"error": e.__str__()})
 
-    raw_password = generate_secret()
+    raw_password = token_hex()
 
     try:
         new_user = User(

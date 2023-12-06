@@ -9,6 +9,8 @@ from services.config import Config
 from services.database import initialize_database
 from services.utilities import generate_secret, generate_database_url, generate_storage_url
 
+from secrets import token_hex
+
 # Get configuration, create Flask application
 config = Config().get()
 
@@ -19,10 +21,10 @@ def create_app():
     # Setup configuration
     app.config.from_mapping(
         DEBUG=config.application.debug,
-        SECRET_KEY=generate_secret(),
+        SECRET_KEY=token_hex(),
         DATABASE=generate_database_url(),
         SQLALCHEMY_DATABASE_URI=generate_database_url(),
-        JWT_SECRET_KEY=generate_secret(),
+        JWT_SECRET_KEY=token_hex(),
     )
 
     # Configure blueprints/views and ratelimiting
