@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from models.user import User
 from services.database import database_session
-from services.utilities import (admin_required, generate_secret, detailed_response,
+from services.utilities import (admin_required, detailed_response,
                                 validate_format, custom_response, response)
 
 from markupsafe import escape

@@ -4,23 +4,12 @@ from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from services.config import Config
 
 from typing import Union
-from secrets import choice
 from functools import wraps
 from re import match
 from datetime import datetime
 from uuid import UUID
 
 config = Config().get()
-
-
-def generate_secret(length=config.security.secret_length):
-    """
-    Creates a secret-key based on the character-set passed by the configuration.
-    Returns a string.
-
-    :return: String, secret-key
-    """
-    return ''.join(choice(config.security.character_list) for _ in range(length))
 
 
 def response(status: int = 200, message: str = "This is a message"):

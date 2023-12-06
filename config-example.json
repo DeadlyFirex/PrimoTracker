@@ -9,8 +9,6 @@
     "version": "/v1/"
   },
   "security": {
-    "character_list": "abcd-$.01234567890",
-    "secret_length": 16,
     "activity_timeout": 3600,
     "token_lifetime": 54200
   },

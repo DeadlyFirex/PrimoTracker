@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 from flaskr import admin, auth, generics, user
 from services.config import Config
 from services.database import initialize_database
-from services.utilities import generate_secret, generate_database_url, generate_storage_url
+from services.utilities import generate_database_url, generate_storage_url
 
 from secrets import token_hex
 
