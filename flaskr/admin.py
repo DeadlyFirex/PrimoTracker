@@ -8,6 +8,8 @@ from services.database import database_session
 from services.utilities import (admin_required, generate_secret, detailed_response,
                                 validate_format, custom_response, response)
 
+from markupsafe import escape
+
 # Configure blueprint
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -76,7 +78,7 @@ def post_admin_user_delete(uuid: str):
     count = User.query.filter_by(uuid=uuid).delete()
 
     if count < 1:
-        return response(404, f"User <{uuid}> not found, unable to delete.")
+        return response(404, f"User <{escape(uuid)}> not found, unable to delete.")
 
     database_session.commit()
 

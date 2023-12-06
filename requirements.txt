@@ -7,3 +7,4 @@ Flask-Limiter
 bcrypt
 setuptools
 loguru
+MarkupSafe

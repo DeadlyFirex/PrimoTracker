@@ -4,6 +4,7 @@ from flask_jwt_extended import get_jwt_identity
 from models.user import User
 from services.utilities import validate_format, user_required, response, return_result
 
+from markupsafe import escape
 # Configure blueprint
 user = Blueprint('user', __name__, url_prefix='/user')
 
@@ -27,7 +28,7 @@ def get_user_by_uuid(uuid):
     argument_user = User.query.filter_by(uuid=uuid).first()
 
     if argument_user is None:
-        return response(404, f"User <{uuid}> not found.")
+        return response(404, f"User <{escape(uuid)}> not found.")
 
     return return_result(200, "Fetched user successfully", {"uuid": argument_user.uuid,
                                                             "name": argument_user.name,
