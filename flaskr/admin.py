@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from models.user import User
 from services.database import database_session
-from services.utilities import admin_required, response, ResponseType, validate_format
+from services.utilities import admin_required, response, ResponseType, validate_format, validate_input
 
 from markupsafe import escape
 from secrets import token_hex
@@ -16,6 +16,7 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin.route("/user/add", methods=['POST'])
 @admin_required()
+@validate_input(username=str, name=str, email=str)
 def post_admin_user_add():
     """
     Add a user, handling an HTTP POST request. \n
@@ -24,20 +25,12 @@ def post_admin_user_add():
     :return: JSON status response.
     """
 
-    try:
-        username: str = request.json.get("username", None)
-        name: str = request.json.get("name", None)
-        email: str = request.json.get("email", None)
-        phone_number: str = request.json.get("phone_number", None)
-        postal_code: str = request.json.get("postal_code", None)
-        address: str = request.json.get("address", None)
-
-        if not all(isinstance(i, str) for i in [username, name, email, phone_number, postal_code, address]):
-            raise ValueError(
-                f"Expected str, instead got [{type(username), type(name), type(email), type(phone_number), type(postal_code), type(address)}]")
-
-    except (AttributeError, ValueError) as e:
-        return detailed_response(400, "Bad request, see details.", {"error": e.__str__()})
+    username: str = request.json.get("username", None)
+    name: str = request.json.get("name", None)
+    email: str = request.json.get("email", None)
+    phone_number: str = request.json.get("phone_number", None)
+    postal_code: str = request.json.get("postal_code", None)
+    address: str = request.json.get("address", None)
 
     raw_password = token_hex()
 

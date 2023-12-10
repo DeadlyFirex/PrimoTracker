@@ -5,7 +5,7 @@ from models.user import User
 
 from services.config import Config
 from services.database import database_session
-from services.utilities import admin_required, user_required, response, ResponseType
+from services.utilities import admin_required, user_required, response, ResponseType, validate_input
 
 from datetime import timedelta
 from bcrypt import checkpw
@@ -17,6 +17,7 @@ config = Config().get()
 
 
 @auth.route("/login", methods=['POST'])
+@validate_input(username=str, password=str)
 def post_auth_login():
     """
     Logs a user in.\n
@@ -24,17 +25,8 @@ def post_auth_login():
 
     :return: JSON detailed status response with (login) data.
     """
-    try:
-        username = request.json.get("username", None)
-        password = request.json.get("password", None)
-
-        if not isinstance(username, str):
-            raise ValueError(f"Expected str, instead got {type(username)} for field <username>")
-        if not isinstance(password, str):
-            raise ValueError(f"Expected str, instead got {type(password)} for field <password>")
-
-    except (AttributeError, ValueError) as e:
-        return detailed_response(400, "Bad request, see details.", {"error": e.__str__()})
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
 
     user = User.query.filter_by(username=username).first()
 

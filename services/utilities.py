@@ -108,6 +108,35 @@ def generate_storage_url():
             raise IOError("Unknown storage type")
 
 
+def validate_input(**expected_args):
+    def decorator(fn):
+        @wraps(fn)
+        def decorated_function(*args, **kwargs):
+            json_object = request.get_json(silent=True)
+
+            if json_object is None:
+                return response(ResponseType.ERROR, 400, "Bad request, check details",
+                                error=[{"type": "body", "msg": "No JSON object found"}])
+
+            error_object = [
+                {"type": "field", "msg": f"Field {arg} expected, but not found"}
+                if arg not in json_object else
+                {"type": "field", "msg": f"Expected str, instead got {type(json_object[arg])} for field <{arg}>"}
+                if not isinstance(json_object[arg], expected_args[arg]) else None
+                for arg in expected_args
+            ]
+
+            error_object = [error for error in error_object if error is not None]
+
+            return fn(*args, **kwargs) if not error_object else response(ResponseType.ERROR, 400,
+                                                                         "Bad request, check details",
+                                                                         error=error_object)
+
+        return decorated_function
+
+    return decorator
+
+
 def admin_required():
     """
     Wrapper that performs user tracking and JWT verification\n
