@@ -36,9 +36,24 @@ def response(response_type: ResponseType = ResponseType.RESPONSE,
         "code": code,
         "msg": msg,
         "type": response_type.name.lower(),
-        "details": kwargs if response_type in [ResponseType.DETAILED_RESPONSE,
-                                               ResponseType.RESULT, ResponseType.COMPLEX_ERROR] else None,
+        **kwargs
     }, code
+
+
+def generate_error(error_type: str = "UNKNOWN", msg: str = "No details given.", **kwargs):
+    """
+    Generates an JSON response.
+    Returns a dictionary.
+
+    :return: Dictionary
+    """
+    return {
+        "error": error_type,
+        "msg": msg,
+        "details": {
+            **kwargs
+        }
+    }
 
 
 def calculate_time(start: datetime, end: datetime = datetime.now()) -> float:
@@ -115,20 +130,20 @@ def validate_input(**expected_args):
             json_object = request.get_json(silent=True)
 
             if json_object is None:
-                return response(ResponseType.ERROR, 400, "Bad request, check details",
+                return response(ResponseType.COMPLEX_ERROR, 400, "Bad request, check details",
                                 error=[{"type": "body", "msg": "No JSON object found"}])
 
-            error_object = [
-                {"type": "field", "msg": f"Field {arg} expected, but not found"}
+            error_object = [error for error in [
+                generate_error("JSON_FIELD_MISSING", f"Field {arg} expected, but not found", field=arg)
                 if arg not in json_object else
-                {"type": "field", "msg": f"Expected str, instead got {type(json_object[arg])} for field <{arg}>"}
+                generate_error("JSON_FIELD_TYPE_INCORRECT",
+                               f"Expected str, instead got {type(json_object[arg])} for field <{arg}>",
+                               field=arg, expected=f"{expected_args[arg]}", received=f"{type(json_object[arg])}")
                 if not isinstance(json_object[arg], expected_args[arg]) else None
                 for arg in expected_args
-            ]
+            ] if error is not None]
 
-            error_object = [error for error in error_object if error is not None]
-
-            return fn(*args, **kwargs) if not error_object else response(ResponseType.ERROR, 400,
+            return fn(*args, **kwargs) if not error_object else response(ResponseType.COMPLEX_ERROR, 400,
                                                                          "Bad request, check details",
                                                                          error=error_object)
 
