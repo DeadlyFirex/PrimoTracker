@@ -8,86 +8,40 @@ from functools import wraps
 from re import match
 from datetime import datetime
 from uuid import UUID
+from enum import Enum
 
 config = Config().get()
 
 
-def response(status: int = 200, message: str = "This is a message"):
+class ResponseType(Enum):
+    """
+    Enum for response types
+    """
+    RESPONSE = 0
+    DETAILED_RESPONSE = 1
+    RESULT = 2
+    ERROR = 3
+    COMPLEX_ERROR = 4
+
+
+def response(response_type: ResponseType = ResponseType.RESPONSE,
+             code: int = 200, msg: str = "This is a message", **kwargs):
     """
     Generates an JSON response.
     Returns a dictionary.
 
     :return: Dictionary
     """
-    result = {
-        "status": status,
-        "message": message
-    }
-    return result, status
+    return {
+        "code": code,
+        "msg": msg,
+        "type": response_type.name.lower(),
+        "details": kwargs if response_type in [ResponseType.DETAILED_RESPONSE,
+                                               ResponseType.RESULT, ResponseType.COMPLEX_ERROR] else None,
+    }, code
 
 
-def error_response(status: int = 200, message: str = "This is a message", error: Union[str, dict] = None):
-    """
-    Generates an JSON response.
-    Returns a dictionary.
-
-    :return: Dictionary
-    """
-    result = {
-        "status": status,
-        "message": message
-    }
-    result.update({"error": error})
-    return result, status
-
-
-def detailed_response(status: int = 200, message: str = "This is a message", details: Union[str, dict] = None):
-    """
-    Generates an JSON response.
-    Returns a dictionary.
-
-    :return: Dictionary
-    """
-    result = {
-        "status": status,
-        "message": message,
-    }
-    result.update({"details": details})
-    return result, status
-
-
-def custom_response(status: int = 200, message: str = "This is a message", custom: Union[str, dict] = None):
-    """
-    Generates a custom JSON response.\n
-    Returns a dictionary.\n
-    Appends a new dictionary to the standard one.\n
-
-    :return: Dictionary
-    """
-    result = {
-        "status": status,
-        "message": message,
-    }
-    result.update(custom)
-    return result, status
-
-
-def return_result(status: int = 200, message: str = "This is a message", result: Union[str, dict, list] = None):
-    """
-    Generates an JSON response based on the successful result template.
-    Returns a dictionary.
-
-    :return: Dictionary
-    """
-    result = {
-        "status": status,
-        "message": message,
-        "result": result
-    }
-    return result, status
-
-
-def calculate_time(start: datetime, end: datetime = datetime.now()):
+def calculate_time(start: datetime, end: datetime = datetime.now()) -> float:
     """
     Calculates time difference in milliseconds.\n
     Returns the result in two decimal rounded string.
@@ -96,7 +50,7 @@ def calculate_time(start: datetime, end: datetime = datetime.now()):
     :param end: End datetime object
     :return: Time difference in milliseconds, string.
     """
-    return f"{round((end - start).total_seconds() * 1000, 2)}ms"
+    return round((end - start).total_seconds() * 1000, 2)
 
 
 def validate_format(validation_type: any, value: str) -> Union[bool, ValueError]:

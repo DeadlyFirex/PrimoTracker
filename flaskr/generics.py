@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from services.config import Config
-from services.utilities import response, detailed_response
+from services.utilities import response, ResponseType
 
 # Configure blueprint
 config = Config().get()
@@ -16,7 +16,7 @@ def get_generics_health():
     :return: JSON status response.
     """
 
-    return response(200, "ok")
+    return response(code=200, msg="ok")
 
 
 @generics.route("/version", methods=['GET'])
@@ -27,15 +27,4 @@ def get_generics_version():
     :return: JSON detailed status response with (link/version) data.
     """
 
-    return detailed_response(301, "ok", {"link": config.server.version})
-
-
-@generics.route("/ping", methods=['GET'])
-def get_generics_ping():
-    """
-    Returns a 204, no content to the sender. Exempt from limiters.
-
-    :return: Nothing.
-    """
-
-    return "", 204
+    return response(ResponseType.DETAILED_RESPONSE, 301, "ok", link=config.server.version)
