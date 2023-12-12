@@ -17,11 +17,10 @@ class ResponseType(Enum):
     """
     Enum for response types
     """
-    RESPONSE = 0
-    DETAILED_RESPONSE = 1
-    RESULT = 2
-    ERROR = 3
-    COMPLEX_ERROR = 4
+    RESPONSE = "response"
+    DETAILED_RESPONSE = "detailed_response"
+    RESULT = "result"
+    ERROR = "complex_error"
 
 
 def response(response_type: ResponseType = ResponseType.RESPONSE,
@@ -130,20 +129,20 @@ def validate_input(**expected_args):
             json_object = request.get_json(silent=True)
 
             if json_object is None:
-                return response(ResponseType.COMPLEX_ERROR, 400, "Bad request, check details",
-                                error=[{"type": "body", "msg": "No JSON object found"}])
+                return response(ResponseType.ERROR, 400, "Bad request, check details",
+                                error=generate_error("REQUEST_JSON_INVALID", "No JSON object found"))
 
             error_object = [error for error in [
-                generate_error("JSON_FIELD_MISSING", f"Field {arg} expected, but not found", field=arg)
+                generate_error("REQUEST_JSON_FIELD_INVALID", f"Field {arg} expected, but not found", field=arg)
                 if arg not in json_object else
-                generate_error("JSON_FIELD_TYPE_INCORRECT",
+                generate_error("REQUEST_JSON_TYPE_INVALID",
                                f"Expected str, instead got {type(json_object[arg])} for field <{arg}>",
                                field=arg, expected=f"{expected_args[arg]}", received=f"{type(json_object[arg])}")
                 if not isinstance(json_object[arg], expected_args[arg]) else None
                 for arg in expected_args
             ] if error is not None]
 
-            return fn(*args, **kwargs) if not error_object else response(ResponseType.COMPLEX_ERROR, 400,
+            return fn(*args, **kwargs) if not error_object else response(ResponseType.ERROR, 400,
                                                                          "Bad request, check details",
                                                                          error=error_object)
 
@@ -167,10 +166,11 @@ def admin_required():
             from models.user import User
             user = User.query.filter_by(uuid=get_jwt_identity()).first()
             if user.admin:
-                user.is_active(source=fn.__name__, address=request.remote_addr)
                 return fn(*args, **kwargs)
             else:
-                return response(403, "Forbidden, no rights to access resource")
+                return response(ResponseType.ERROR, 403, "Forbidden, no rights to access resource",
+                                error=generate_error("REQUEST_FORBIDDEN",
+                                                     "Forbidden, no rights to access resource"))
 
         return decorator
 
@@ -195,7 +195,9 @@ def user_required():
                 # user.mark_active()
                 return fn(*args, **kwargs)
             else:
-                return response(403, "Forbidden, no rights to access resource")
+                return response(ResponseType.ERROR, 401, "Unauthorized, no rights to access resource",
+                                error=generate_error("REQUEST_UNAUTHORIZED",
+                                                     "Unauthorized, no rights to access resource"))
 
         return decorator
 
