@@ -1,11 +1,11 @@
 from bcrypt import hashpw, gensalt
 from sqlalchemy.exc import IntegrityError
 
-from flask import Blueprint, request
+from flask import Blueprint
 
 from models.user import User
 from services.database import database_session
-from services.utilities import admin_required, response, ResponseType, validate_format, validate_input
+from services.utilities import admin_required, response, ResponseType, generate_error, validate_format, validate_input
 
 from markupsafe import escape
 from secrets import token_hex
@@ -16,8 +16,8 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin.route("/user/add", methods=['POST'])
 @admin_required()
-@validate_input(username=str, name=str, email=str)
-def post_admin_user_add():
+@validate_input(username=str, name=str, email=str, admin=bool)
+def post_admin_user_add(**kwargs):
     """
     Add a user, handling an HTTP POST request. \n
     This creates and adds a user to the database, if valid.
@@ -25,21 +25,14 @@ def post_admin_user_add():
     :return: JSON status response.
     """
 
-    username: str = request.json.get("username", None)
-    name: str = request.json.get("name", None)
-    email: str = request.json.get("email", None)
-    phone_number: str = request.json.get("phone_number", None)
-    postal_code: str = request.json.get("postal_code", None)
-    address: str = request.json.get("address", None)
-
     raw_password = token_hex()
 
     try:
         new_user = User(
-            name=name,
-            username=username,
-            email=validate_format("email", email) or "invalid@email.com",
-            admin=False,
+            name=(kwargs.get("__name")),
+            username=(kwargs.get("__username")),
+            email=validate_format("email", kwargs.get("__email")) or "invalid@email.com",
+            admin=kwargs.get("__admin"),
             password=hashpw(raw_password.encode("UTF-8"), gensalt()).decode("UTF-8")
         )
 
@@ -47,11 +40,13 @@ def post_admin_user_add():
         database_session.commit()
 
     except IntegrityError as error:
-        return response(ResponseType.COMPLEX_ERROR, 400, f"Bad request, check details for more info",
-                        error={"error": error.args[0], "constraint": error.args[0].split(":")[1].removeprefix(" ")})
+        return response(ResponseType.ERROR, 400, "Bad request, check details",
+                        error=generate_error("ADMIN_DATABASE_CONSTRAINT_FAILED",
+                                             f"Constraint {error.args[0]} failed",
+                                             constraint=error.args[0].split(":")[1].removeprefix(" ")))
 
-    return response(ResponseType.DETAILED_RESPONSE, 201, f"Successfully created user {new_user.username}",
-                    login={"login": {"uuid": new_user.uuid, "password": raw_password}})
+    return response(ResponseType.RESULT, 201, f"Successfully created user {new_user.username}",
+                    result={"uuid": new_user.uuid, "password": raw_password})
 
 
 @admin.route("/user/delete/<uuid>", methods=['DELETE'])
@@ -65,13 +60,16 @@ def post_admin_user_delete(uuid: str):
     """
 
     if not validate_format("uuid", uuid):
-        return response(ResponseType.ERROR, 400, "Bad request, given value is not a UUID.")
+        return response(ResponseType.ERROR, 400, "Bad request, check details",
+                        error=generate_error("REQUEST_FIELD_INVALID_FORMAT", "Invalid UUID format", uuid=uuid))
 
     count = User.query.filter_by(uuid=uuid).delete()
 
     if count < 1:
-        return response(ResponseType.ERROR, 404, f"User <{escape(uuid)}> not found, unable to delete.")
+        return response(ResponseType.ERROR, 404, f"User <{escape(uuid)}> not found, unable to delete.",
+                        error=generate_error("REQUEST_INVALID", "UUID not found", uuid=uuid))
 
     database_session.commit()
 
-    return response(ResponseType.DETAILED_RESPONSE, 200, f"Successfully deleted {count} user", uuid=uuid)
+    return response(ResponseType.RESULT, 200, f"Deleted <{count}> user",
+                    result={"uuid": uuid, "count": count})
