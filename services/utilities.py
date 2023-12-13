@@ -142,9 +142,13 @@ def validate_input(**expected_args):
                 for arg in expected_args
             ] if error is not None]
 
-            return fn(*args, **kwargs) if not error_object else response(ResponseType.ERROR, 400,
-                                                                         "Bad request, check details",
-                                                                         error=error_object)
+            if error_object:
+                response(ResponseType.ERROR, 400,"Bad request, check details", error=error_object)
+
+            for key, value in json_object.items():
+                kwargs[f"__{key}"] = value
+
+            return fn(*args, **kwargs)
 
         return decorated_function
 
@@ -164,8 +168,9 @@ def admin_required():
         def decorator(*args, **kwargs):
             verify_jwt_in_request()
             from models.user import User
-            user = User.query.filter_by(uuid=get_jwt_identity()).first()
+            user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
             if user.admin:
+                kwargs["*jwt_user"] = user
                 return fn(*args, **kwargs)
             else:
                 return response(ResponseType.ERROR, 403, "Forbidden, no rights to access resource",
@@ -192,7 +197,7 @@ def user_required():
             from models.user import User
             user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
             if user:
-                # user.mark_active()
+                kwargs["*jwt_user"] = user
                 return fn(*args, **kwargs)
             else:
                 return response(ResponseType.ERROR, 401, "Unauthorized, no rights to access resource",
