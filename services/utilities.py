@@ -132,18 +132,21 @@ def validate_input(**expected_args):
                 return response(ResponseType.ERROR, 400, "Bad request, check details",
                                 error=generate_error("REQUEST_JSON_INVALID", "No JSON object found"))
 
-            error_object = [error for error in [
-                generate_error("REQUEST_JSON_FIELD_INVALID", f"Field {arg} expected, but not found", field=arg)
-                if arg not in json_object else
-                generate_error("REQUEST_JSON_TYPE_INVALID",
-                               f"Expected str, instead got {type(json_object[arg])} for field <{arg}>",
-                               field=arg, expected=f"{expected_args[arg]}", received=f"{type(json_object[arg])}")
-                if not isinstance(json_object[arg], expected_args[arg]) else None
-                for arg in expected_args
-            ] if error is not None]
+            error_object = []
+            for arg in expected_args:
+                value = json_object.get(arg)
+                if value is None:
+                    error_object.append(
+                        generate_error("REQUEST_JSON_FIELD_INVALID",
+                                       f"Field {arg} expected, but not found", field=arg))
+                elif not isinstance(value, expected_args[arg]):
+                    error_object.append(
+                        generate_error("REQUEST_JSON_TYPE_INVALID",
+                                       f"Expected {expected_args[arg]} for field <{arg}>, instead got {type(value)}",
+                                       field=arg, expected=f"{expected_args[arg]}", received=f"{type(value)}"))
 
             if error_object:
-                response(ResponseType.ERROR, 400,"Bad request, check details", error=error_object)
+                response(ResponseType.ERROR, 400, "Bad request, check details", error=error_object)
 
             for key, value in json_object.items():
                 kwargs[f"__{key}"] = value
