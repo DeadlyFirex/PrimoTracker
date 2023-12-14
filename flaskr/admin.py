@@ -5,7 +5,8 @@ from flask import Blueprint
 
 from models.user import User
 from services.database import database_session
-from services.utilities import admin_required, response, ResponseType, generate_error, validate_format, validate_input
+from services.utilities import response, ResponseType, generate_error, validate_format, validate_input
+from services.authentication import admin_required
 
 from markupsafe import escape
 from secrets import token_hex
@@ -51,7 +52,7 @@ def post_admin_user_add(**kwargs):
 
 @admin.route("/user/delete/<uuid>", methods=['DELETE'])
 @admin_required()
-def post_admin_user_delete(uuid: str):
+def post_admin_user_delete(uuid: str, **kwargs):
     """
     Deletes a user, handling an HTTP DELETE request.\n
     This deletes a user based on UUID, if they exist.
