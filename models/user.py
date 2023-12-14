@@ -1,10 +1,10 @@
 from sqlalchemy import Boolean, DateTime, Column, Integer, String, JSON, Uuid
 from sqlalchemy.orm import scoped_session
+from marshmallow.utils import RAISE
 
-from services.database import Base, generate_uuid
+from services.database import Base, ma, generate_uuid
 from services.config import ExtendedConfig, Config
 
-from dataclasses import dataclass
 from datetime import datetime, timedelta
 from uuid import UUID
 
@@ -12,14 +12,12 @@ config = Config().get()
 db_config = ExtendedConfig(path=config.configuration.database_path).get()
 
 
-@dataclass
 class User(Base):
     """
     User model representing a user.
     """
     __tablename__ = db_config.table_names.users
     __related_name__ = db_config.table_names.audit_log
-    # __related1_name__ = db_config.table_names.wish_log
 
     # User-specific information
     id: int = Column(Integer, primary_key=True)
@@ -50,7 +48,7 @@ class User(Base):
     active_until: datetime = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     def mark_active(self, session: scoped_session):
-        self.active_until += timedelta(seconds=config.security.activity_timeout)
+        self.active_until = datetime.utcnow() + timedelta(seconds=config.security.activity_timeout)
         session.commit()
 
     @staticmethod
@@ -65,3 +63,12 @@ class User(Base):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        fields = ("uuid", "username", "name", "email", "created_at", "country", "tags", "admin",
+                  "total_gains", "total_spending", "total_wishes", "balance", "active_until")
+        datetimeformat = "%Y-%m-%d %H:%M:%S.%f"
+        unknown = RAISE
