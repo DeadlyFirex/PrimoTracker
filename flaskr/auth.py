@@ -1,11 +1,12 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity
 
 from models.user import User
 
 from services.config import Config
 from services.database import database_session
-from services.utilities import admin_required, user_required, response, ResponseType, validate_input
+from services.utilities import response, ResponseType, validate_input
+from services.authentication import user_required, admin_required
 
 from datetime import timedelta
 from bcrypt import checkpw
@@ -18,19 +19,16 @@ config = Config().get()
 
 @auth.route("/login", methods=['POST'])
 @validate_input(username=str, password=str)
-def post_auth_login():
+def post_auth_login(**kwargs):
     """
     Logs a user in.\n
     Returns a ``JWT`` token for authentication.
 
     :return: JSON detailed status response with (login) data.
     """
-    username = request.json.get("username", None)
-    password = request.json.get("password", None)
+    user = User.query.filter_by(username=(kwargs.get("__username"))).first()
 
-    user = User.query.filter_by(username=username).first()
-
-    if user is None or checkpw(password.encode("UTF-8"), user.password.encode("UTF-8")) is False:
+    if user is None or checkpw(kwargs.get("__password").encode("UTF-8"), user.password.encode("UTF-8")) is False:
         return response(ResponseType.ERROR, 401, "Unauthorized, wrong username/password")
 
     lifetime = timedelta(seconds=config.security.token_lifetime)
@@ -40,13 +38,14 @@ def post_auth_login():
 
     user.mark_active(session=database_session)
 
-    return response(ResponseType.RESULT, 200, f"Successfully logged in as {user.username}",
-                    login={"uuid": user.uuid, "token": user.token, "lifetime": lifetime.total_seconds()})
+    return response(ResponseType.RESULT, 200, f"Logged in as {user.username}",
+                    login={"uuid": user.uuid, "username": user.username,
+                           "token": user.token, "lifetime": lifetime.total_seconds()})
 
 
 @auth.route("/test", methods=['GET'])
 @user_required()
-def get_auth_test():
+def get_auth_test(**kwargs):
     """
     Simply checks if you're properly logged in.
 
@@ -60,7 +59,7 @@ def get_auth_test():
 
 @auth.route("/admin/test", methods=['GET'])
 @admin_required()
-def get_auth_admin_test():
+def get_auth_admin_test(**kwargs):
     """
     Simply checks if you're properly logged in as an administrator.
 
