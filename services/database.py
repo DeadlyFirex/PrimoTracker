@@ -1,19 +1,23 @@
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker, declarative_base, scoped_session
+from flask_marshmallow import Marshmallow
 
 from services.config import Config, ExtendedConfig
 from services.utilities import generate_database_url
 
 from uuid import uuid4, UUID
 from json import load
+from logging import getLogger
 
-# TODO: Verify if the engine properly works
-# TODO: Verify if scoped_session is optimal
 config = Config().get()
+logger = getLogger(config.application.name)
 db_config = ExtendedConfig(path=config.configuration.database_path).get()
 index_data = load(open(config.initialization.index_path, "r"))
 
 engine = create_engine(generate_database_url())
+ma = Marshmallow()
+
 Base = declarative_base()
 database_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
 Base.query = database_session.query_property()
@@ -47,6 +51,26 @@ def generate_uuid(table_name: str, session: scoped_session = index_session, init
 
         return unique_uuid
     raise Exception(f"Could not generate unique UUID after {db_config.uuid_max_attempts} attempts")
+
+
+def verify_database():
+    from models import user, index, audit
+
+    if config.database.type == "memory":
+        logger.warning("Warning: You are using a memory database.\n"
+                       "Most functions besides starting will not function properly.\n"
+                       "Do NOT use this in production.")
+    logger.info(" - Checking for database initialization.")
+
+    try:
+        if any(not table.query.all() for table in [user.User, audit.AuditAction, index.UUIDIndex]):
+            initialize_database()
+            logger.warning(" = Performing new database initialization.")
+        else:
+            logger.warning(" * Database does not need initialization.")
+    except OperationalError:
+        initialize_database()
+        logger.warning(" = Performing new database initialization.")
 
 
 def initialize_database():
