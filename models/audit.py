@@ -32,17 +32,6 @@ class Audit(Base):
     severity: str = Column(Enum(*db_config.audit.priorities), nullable=False, default="INFO")
     timestamp: datetime = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    # user = relationship("User", back_populates="audit")
-
-    # @staticmethod
-    # def create_entry(db_session: scoped_session, user_uuid: str, action_uuid: int, is_user_action: bool,
-    #                  endpoint: str, parameters: dict, response: dict, response_code: int):
-    #     db_session.add(Audit(**{key: locals()[key] for key in
-    #                             ["user_uuid", "action_uuid", "is_user_action", "endpoint", "parameters", "response",
-    #                              "response_code"]}))
-    #     db_session.commit()
-    #     return True
-
     @staticmethod
     def __database_init__(session: scoped_session):
         """
