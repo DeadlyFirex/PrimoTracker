@@ -10,6 +10,7 @@ from services.authentication import admin_required
 
 from markupsafe import escape
 from secrets import token_hex
+from uuid import UUID
 
 # Configure blueprint
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -65,7 +66,7 @@ def post_admin_user_delete(uuid: str, **kwargs):
         return response(ResponseType.ERROR, 400, "Bad request, check details",
                         error=generate_error("REQUEST_FIELD_INVALID_FORMAT", "Invalid UUID format", uuid=uuid))
 
-    count = User.query.filter_by(uuid=uuid).delete()
+    count = User.query.filter_by(uuid=UUID(uuid)).delete()
 
     if count < 1:
         return response(ResponseType.ERROR, 404, f"User <{escape(uuid)}> not found, unable to delete.",
