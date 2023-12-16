@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm import sessionmaker, declarative_base, scoped_session
 from flask_marshmallow import Marshmallow
 
@@ -68,7 +68,7 @@ def verify_database():
             logger.warning(" = Performing new database initialization.")
         else:
             logger.warning(" * Database does not need initialization.")
-    except OperationalError:
+    except (OperationalError, ProgrammingError):
         initialize_database()
         logger.warning(" = Performing new database initialization.")
 
