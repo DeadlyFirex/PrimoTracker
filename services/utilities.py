@@ -19,7 +19,8 @@ class ResponseType(Enum):
     RESPONSE = "response"
     DETAILED_RESPONSE = "detailed_response"
     RESULT = "result"
-    ERROR = "complex_error"
+    ERROR = "error"
+    COMPLEX_ERROR = "complex_error"
 
 
 def response(response_type: ResponseType = ResponseType.RESPONSE,

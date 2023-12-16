@@ -41,10 +41,11 @@ def post_admin_user_add(**kwargs):
         database_session.commit()
 
     except IntegrityError as error:
-        return response(ResponseType.ERROR, 400, "Bad request, check details",
-                        error=generate_error("ADMIN_DATABASE_CONSTRAINT_FAILED",
-                                             f"Constraint {error.args[0]} failed",
-                                             constraint=error.args[0].split(":")[1].removeprefix(" ")))
+        return response(ResponseType.COMPLEX_ERROR, 400, "Bad request, check details",
+                        error=generate_error("ADMIN_DATABASE_FAILURE",
+                                             f"Generic database error, most likely - constraint failure",
+                                             full=escape(error.args.__str__()),
+                                             args=[escape(arg) for arg in error.args]))
 
     return response(ResponseType.RESULT, 201, f"Successfully created user {new_user.username}",
                     result={"uuid": new_user.uuid, "password": raw_password})
