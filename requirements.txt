@@ -1,5 +1,6 @@
 Flask>=3.0.0
-python_json_config~=1.2.3
+python-configuration>=0.9.0
+toml>=0.10.0
 SQLAlchemy>=2.0.0
 Flask-SQLAlchemy>=3.0.0
 flask-jwt-extended[asymmetric_crypto]>=4.0.0
