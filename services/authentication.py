@@ -1,6 +1,6 @@
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity, JWTManager
 
-from services.utilities import response, ResponseType, generate_error
+from services.response import response, ResponseType, generate_error
 
 from functools import wraps
 from uuid import UUID
@@ -40,7 +40,6 @@ def user_required():
 
     :return: Sir, this is a decorator
     """
-
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
