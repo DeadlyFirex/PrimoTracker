@@ -1,8 +1,11 @@
+import blueprints.schemas.user as schemas
+
 from flask import Blueprint
 
 from models.user import User, UserSchema
-from services.utilities import validate_format, response, ResponseType
+from services.response import response, ResponseType
 from services.authentication import user_required
+from services.validation import validate_request
 
 from markupsafe import escape
 from uuid import UUID
@@ -14,15 +17,13 @@ user_schema = UserSchema()
 
 @user.route("/<uuid>", methods=['GET'])
 @user_required()
+@validate_request(query=schemas.UserGetQuerySchema())
 def get_user_by_uuid(uuid, **kwargs):
     """
     Gets a single user by UUID and returns public information about them.
 
     :return: JSON result response with (user) data.
     """
-    if not validate_format("uuid", uuid):
-        return response(ResponseType.ERROR, 400, "Expected UUID, received something else.")
-
     argument_user = User.query.filter_by(uuid=UUID(uuid)).first()
 
     if argument_user is None:

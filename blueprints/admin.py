@@ -1,24 +1,28 @@
-from bcrypt import hashpw, gensalt
-from sqlalchemy.exc import IntegrityError
+import blueprints.schemas.admin as schemas
 
+from sqlalchemy.exc import IntegrityError
 from flask import Blueprint
 
-from models.user import User
+from models.user import User, UserBodySchema, UserFullSchema
 from services.database import database_session
-from services.utilities import response, ResponseType, generate_error, validate_format, validate_input
+from services.response import response, ResponseType, generate_error
 from services.authentication import admin_required
+from services.validation import validate_request
 
 from markupsafe import escape
 from secrets import token_hex
 from uuid import UUID
+from bcrypt import hashpw, gensalt
 
 # Configure blueprint
 admin = Blueprint('admin', __name__, url_prefix='/admin')
+user_full_schema = UserFullSchema()
+user_body_schema = UserBodySchema()
 
 
 @admin.route("/user/add", methods=['POST'])
 @admin_required()
-@validate_input(username=str, name=str, email=str, admin=bool)
+@validate_request(body=user_body_schema)
 def post_admin_user_add(**kwargs):
     """
     Add a user, handling an HTTP POST request. \n
@@ -28,14 +32,17 @@ def post_admin_user_add(**kwargs):
     """
 
     raw_password = token_hex()
+    body = kwargs.get("*body")
 
     try:
         new_user = User(
-            name=(kwargs.get("__name")),
-            username=(kwargs.get("__username")),
-            email=validate_format("email", kwargs.get("__email")) or "invalid@email.com",
-            admin=kwargs.get("__admin"),
-            password=hashpw(raw_password.encode("UTF-8"), gensalt()).decode("UTF-8")
+            name=(body.get("name")),
+            username=(body.get("username")),
+            email=body.get("email"),
+            admin=body.get("admin"),
+            password=hashpw(raw_password.encode("UTF-8"), gensalt()).decode("UTF-8"),
+            country=body.get("country"),
+            tags=body.get("tags")
         )
 
         database_session.add(new_user)
@@ -52,8 +59,29 @@ def post_admin_user_add(**kwargs):
                     result={"uuid": new_user.uuid, "password": raw_password})
 
 
+@admin.route("/user/<uuid>", methods=['GET'])
+@admin_required()
+@validate_request(query=schemas.AdminUserGetQuerySchema(), path=schemas.AdminUserGetPathSchema())
+def get_admin_user(uuid: str, **kwargs):
+    """
+    Get a user, handling an HTTP GET request. \n
+    This gets a user based on UUID, if they exist.
+
+    :return: JSON status response.
+    """
+    user = User.query.filter_by(uuid=UUID(uuid)).first()
+
+    if not user:
+        return response(ResponseType.ERROR, 404, f"User <{escape(uuid)}> not found",
+                        error=generate_error("REQUEST_INVALID", "UUID not found", uuid=uuid))
+
+    return response(ResponseType.RESULT, 200, f"Successfully retrieved user {user.username}",
+                    result=user_full_schema.dump(user))
+
+
 @admin.route("/user/delete/<uuid>", methods=['DELETE'])
 @admin_required()
+@validate_request(query=schemas.AdminUserDeleteQuerySchema(), path=schemas.AdminUserDeletePathSchema())
 def post_admin_user_delete(uuid: str, **kwargs):
     """
     Deletes a user, handling an HTTP DELETE request.\n
@@ -61,11 +89,6 @@ def post_admin_user_delete(uuid: str, **kwargs):
 
     :return: JSON status response.
     """
-
-    if not validate_format("uuid", uuid):
-        return response(ResponseType.ERROR, 400, "Bad request, check details",
-                        error=generate_error("REQUEST_FIELD_INVALID_FORMAT", "Invalid UUID format", uuid=uuid))
-
     count = User.query.filter_by(uuid=UUID(uuid)).delete()
 
     if count < 1:

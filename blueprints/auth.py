@@ -1,24 +1,25 @@
+import blueprints.schemas.auth as schemas
+
 from flask import Blueprint
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token
 
 from models.user import User
-
-from services.config import Config
 from services.database import database_session
-from services.utilities import response, ResponseType, validate_input
+from services.response import response, ResponseType
+from services.validation import validate_request
 from services.authentication import user_required, admin_required
+from services.configuration import Config
 
 from datetime import timedelta
 from bcrypt import checkpw
-from uuid import UUID
 
 # Configure blueprint
 auth = Blueprint('auth', __name__, url_prefix='/auth')
-config = Config().get()
+cfg = Config()
 
 
 @auth.route("/login", methods=['POST'])
-@validate_input(username=str, password=str)
+@validate_request(body=schemas.AuthLoginBodySchema())
 def post_auth_login(**kwargs):
     """
     Logs a user in.\n
@@ -26,12 +27,13 @@ def post_auth_login(**kwargs):
 
     :return: JSON detailed status response with (login) data.
     """
-    user = User.query.filter_by(username=(kwargs.get("__username"))).first()
+    body = kwargs.get("*body")
+    user = User.query.filter_by(username=(body.get("username"))).first()
 
-    if user is None or checkpw(kwargs.get("__password").encode("UTF-8"), user.password.encode("UTF-8")) is False:
+    if user is None or checkpw(body.get("password").encode("UTF-8"), user.password.encode("UTF-8")) is False:
         return response(ResponseType.ERROR, 401, "Unauthorized, wrong username/password")
 
-    lifetime = timedelta(seconds=config.security.token_lifetime)
+    lifetime = timedelta(seconds=cfg.security.token.lifetime)
     user.token = create_access_token(identity=user.uuid, fresh=False, expires_delta=lifetime,
                                      additional_claims={"username": user.username, "admin": user.admin})
     database_session.commit()
@@ -51,7 +53,7 @@ def get_auth_test(**kwargs):
 
     :return: JSON status response.
     """
-    current_user = User.query.filter_by(uuid=UUID(get_jwt_identity())).first()
+    current_user = kwargs.get("*jwt_user")
 
     return response(ResponseType.DETAILED_RESPONSE, 200, f"Logged in as {current_user.username}",
                     login={"uuid": current_user.uuid, "admin": current_user.admin})
@@ -65,7 +67,7 @@ def get_auth_admin_test(**kwargs):
 
     :return: JSON status response.
     """
-    current_user = User.query.filter_by(uuid=get_jwt_identity()).first()
+    current_user = kwargs.get("__user")
 
     return response(ResponseType.DETAILED_RESPONSE, 200, f"Logged in as {current_user.username}",
                     login={"uuid": current_user.uuid, "admin": current_user.admin})

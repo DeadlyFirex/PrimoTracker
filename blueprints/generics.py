@@ -1,11 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 
-from services.config import Config
-from services.utilities import response, ResponseType
+from services.response import response, ResponseType
+from services.configuration import Config
 
 # Configure blueprint
-config = Config().get()
 generics = Blueprint('generics', __name__, url_prefix='/')
+cfg = Config()
 
 
 @generics.route("/health", methods=['GET'])
@@ -27,4 +27,4 @@ def get_generics_version():
     :return: JSON detailed status response with (link/version) data.
     """
 
-    return response(ResponseType.DETAILED_RESPONSE, 301, "ok", link=config.server.version)
+    return response(ResponseType.DETAILED_RESPONSE, 301, "ok", link=cfg.server.version)
