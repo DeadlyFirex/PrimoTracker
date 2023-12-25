@@ -1,58 +1,36 @@
 {
   "application": {
     "name": "YourApp",
-    "debug": false
+    "description": "Example description",
+    "version": "0.2.0"
   },
   "server": {
     "host": "localhost",
     "port": 8000,
+    "debug": false,
     "version": "/v1/"
-  },
-  "security": {
-    "activity_timeout": 3600,
-    "token_lifetime": 54200
   },
   "ratelimit": {
     "enabled": true,
-    "headers": true,
-    "limits": {
-      "default": ["5 per second", "100 per minute"],
-      "admin": ["3 per second", "30 per minute"],
-      "authentication": ["2 per second", "20 per minute"],
-      "user": ["3 per second", "30 per minute"]
-    },
-    "storage": {
-      "type": "memory",
-      "host": "",
-      "port": 27017,
-      "credentials": {
-        "username": null,
-        "password": null
-      }
-    }
+    "headers": true
   },
-  "configuration": {
-    "game_path": "./configuration/game.json",
-    "database_path": "./configuration/database.json"
+  "security": {
+    "audit.enabled": true,
+    "ratelimit.enabled": true,
+    "tracking.enabled": true
   },
-  "initialization": {
-    "audit_path": "./templates/static/database/audit.json",
-    "index_path": "./templates/static/database/index.json",
-    "transactions_path": "./templates/static/database/transactions.json",
-    "users_path": "./templates/static/database/users.json",
-    "wishes_path": "./templates/static/database/wishes.json"
-  },
-  "database": {
-    "type": "sqlite",
-    "host": "default.sqlite",
-    "port": 0,
-    "name": "YourApp",
-    "credentials": {
-      "username": "user",
-      "password": "user"
-    },
-    "tables": {
-      "uuid_max_attempts": 100
+  "path": {
+    "configuration": "./configuration/",
+    "templates": "./templates/",
+    "static": "./templates/static/",
+    "database": "./templates/static/database/",
+    "logs": "./logs/",
+    "init": {
+      "audit": "./templates/static/database/audit.json",
+      "index": "./templates/static/database/index.json",
+      "transactions": "./templates/static/database/transactions.json",
+      "users": "./templates/static/database/users.json",
+      "wishes": "./templates/static/database/wishes.json"
     }
   }
 }

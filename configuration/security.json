@@ -1,0 +1,23 @@
+{
+  "security.token": {
+    "lifetime": 54200,
+    "refresh_token.enabled": true,
+    "refresh_token.expiration": 604800
+  },
+  "security.audit": {
+    "lifetime": 2592000,
+    "logging.level": "info",
+    "priorities": [
+      "DEBUG",
+      "INFO",
+      "LOW",
+      "MEDIUM",
+      "HIGH",
+      "CRITICAL",
+      "ERROR"
+    ]
+  },
+  "security.tracking": {
+    "activity_timeout": 3600
+  }
+}

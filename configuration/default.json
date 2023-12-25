@@ -1,0 +1,20 @@
+{
+  "default.balance": {
+    "PRIMOGEMS": 0,
+    "GENESIS_CRYSTALS": 0,
+    "STARDUST": 0,
+    "STARGLITTER": 0,
+    "ACQUAINT_FATE": 0,
+    "INTERTWINED_FATE": 0
+  },
+  "default.tags": [],
+  "default.permissions": [
+    "CREATE",
+    "READ",
+    "UPDATE",
+    "DELETE",
+    "LOGIN",
+    "LOGOUT",
+    "AUTHORIZE"
+  ]
+}
