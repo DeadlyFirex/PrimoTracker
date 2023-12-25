@@ -3,32 +3,37 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm import sessionmaker, declarative_base, scoped_session
 from flask_marshmallow import Marshmallow
 
-from services.config import Config, ExtendedConfig
-from services.utilities import generate_database_url
+from services.configuration import Config, root_path
+from utilities.helpers import generate_url
 
 from uuid import uuid4, UUID
 from json import load
 from logging import getLogger
+from os.path import join, abspath
 
-config = Config().get()
+config = Config()
 logger = getLogger(config.application.name)
-db_config = ExtendedConfig(path=config.configuration.database_path).get()
-index_data = load(open(config.initialization.index_path, "r"))
+index_data = load(open(abspath(join(root_path, config.path.init.index)), "r"))
+initialized = False
 
-engine = create_engine(generate_database_url())
-ma = Marshmallow()
+database_url = generate_url("database", config.database)
+engine = create_engine(database_url, pool_size=config.database.pool.min, max_overflow=config.database.pool.max,
+                       pool_pre_ping=config.database.pool.pre_ping, pool_recycle=config.database.pool.recycle,
+                       pool_timeout=config.database.pool.timeoutMilliseconds)
 
 Base = declarative_base()
 database_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
 Base.query = database_session.query_property()
 index_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
+ma = Marshmallow()
 
 
-def generate_uuid(table_name: str, session: scoped_session = index_session, init: bool = True):
+def generate_uuid(table_name: str = None,
+                  session: scoped_session = index_session, init: bool = True):
     from models.index import UUIDIndex
     attempt = 0
 
-    while attempt < db_config.uuid.max_attempts:
+    while attempt < config.database.uuid.max_attempts:
         unique_uuid = uuid4()
         table_uuid = None
 
@@ -38,7 +43,7 @@ def generate_uuid(table_name: str, session: scoped_session = index_session, init
         if UUIDIndex.query.filter_by(table_uuid=unique_uuid).first():
             continue
 
-        for entry in index_data[db_config.table_names.table_index]:
+        for entry in index_data[config.database.table.table_index]:
             if entry["name"] == table_name:
                 table_uuid = UUID(entry["uuid"])
 
@@ -46,11 +51,10 @@ def generate_uuid(table_name: str, session: scoped_session = index_session, init
             raise Exception("table_name invalid")
 
         session.add(UUIDIndex(uuid=unique_uuid, table_name=table_name, table_uuid=table_uuid))
-        if init:
-            session.commit()
+        session.commit() if init else None
 
         return unique_uuid
-    raise Exception(f"Could not generate unique UUID after {db_config.uuid_max_attempts} attempts")
+    raise Exception(f"Could not generate unique UUID after {config.database.uuid.max_attempts} attempts")
 
 
 def verify_database():
@@ -71,22 +75,30 @@ def verify_database():
     except (OperationalError, ProgrammingError):
         initialize_database()
         logger.warning(" = Performing new database initialization.")
+    finally:
+        globals()["initialized"] = True
 
 
 def initialize_database():
     # TODO: Verify database integrity
     from models import user, index, audit, transactions
-    to_init = [index.TableIndex, index.UUIDIndex, audit.Audit, audit.AuditAction,
-               transactions.Transaction, transactions.TransactionType, transactions.SourceType,
-               transactions.UsageType, transactions.MaterialType, transactions.ExchangeType, user.User]
+    init_config = config.path.init
+    to_init = [(index.TableIndex, init_config.index), (index.UUIDIndex, init_config.index),
+               (audit.Audit, init_config.audit), (audit.AuditAction, init_config.audit),
+               (transactions.TransactionType, init_config.transactions),
+               (transactions.Transaction, init_config.transactions),
+               (transactions.SourceType, init_config.transactions), (transactions.UsageType, init_config.transactions),
+               (transactions.MaterialType, init_config.transactions),
+               (transactions.ExchangeType, init_config.transactions),
+               (user.User, init_config.users)]
 
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     Base.metadata.reflect(bind=engine)
 
     # TODO: Verify this function
-    for model in to_init:
-        model.__database_init__(session=database_session)
+    for model, init in to_init:
+        model.__database_init__(session=database_session, init=abspath(join(root_path, init)))
         if model in [index.UUIDIndex, index.TableIndex]:
             database_session.commit()
 
