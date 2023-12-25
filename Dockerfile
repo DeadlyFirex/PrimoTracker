@@ -15,12 +15,13 @@ RUN pip install --upgrade pip && \
 
 # Rename the configuration file
 RUN mv config-example.json config.json
+RUN mv secrets-example.toml secrets.toml
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
 # Define environment variable
-ENV FLASK_APP=flaskr/__init__.py:create_app
+ENV FLASK_APP=blueprints/__init__.py:create_app
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=8000
 
