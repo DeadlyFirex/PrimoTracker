@@ -1,5 +1,6 @@
 Flask>=3.0.0
-python_json_config~=1.2.3
+python-configuration>=0.9.0
+toml>=0.10.0
 SQLAlchemy>=2.0.0
 Flask-SQLAlchemy>=3.0.0
 flask-jwt-extended[asymmetric_crypto]>=4.0.0
@@ -7,3 +8,6 @@ Flask-Limiter>=3.0.0
 bcrypt>=4.0.0
 setuptools>=63.0.0
 MarkupSafe>=2.0.0
+marshmallow>=3.0.0
+marshmallow-sqlalchemy>=0.29.0
+flask-marshmallow>=0.15.0

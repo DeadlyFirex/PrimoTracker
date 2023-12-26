@@ -1,4 +1,4 @@
-redis
-pymemcache
-pymongo
+# redis
+# pymemcache
+# pymongo
 mysqlclient

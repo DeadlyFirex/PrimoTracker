@@ -2,30 +2,27 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Uuid, Text
 from sqlalchemy.orm import scoped_session
 
 from services.database import Base, generate_uuid
-from services.config import ExtendedConfig, Config
+from services.configuration import Config
 
-from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-config = Config().get()
-db_config = ExtendedConfig(path=config.configuration.database_path).get()
-game_config = ExtendedConfig(path=config.configuration.game_path).get()
+config = Config()
+db_config = config.database
 
 
-@dataclass
 class Transaction(Base):
-    __tablename__ = db_config.table_names.transaction_log
-    __child_name__ = db_config.table_names.transaction_types
-    __child1_name__ = db_config.table_names.source_types
-    __child2_name__ = db_config.table_names.material_types
-    __child3_name__ = db_config.table_names.exchange_types
-    __child4_name__ = db_config.table_names.usage_types
-    __related_name__ = db_config.table_names.users
+    __tablename__ = db_config.table.transaction_log
+    __child_name__ = db_config.table.transaction_types
+    __child1_name__ = db_config.table.source_types
+    __child2_name__ = db_config.table.material_types
+    __child3_name__ = db_config.table.exchange_types
+    __child4_name__ = db_config.table.usage_types
+    __related_name__ = db_config.table.users
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.transaction_log))
+                        default=lambda: generate_uuid(db_config.table.transaction_log))
     user_uuid: UUID = Column(Uuid, ForeignKey(f'{__related_name__}.uuid'), nullable=False)
     type_uuid: UUID = Column(Uuid, ForeignKey(f'{__child_name__}.uuid'), nullable=True)
 
@@ -42,7 +39,7 @@ class Transaction(Base):
     destination: str = Column(String(40), ForeignKey(f'{__child4_name__}.name'), nullable=True)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         """
         This method is called when the database is initialized. \n
         This model does not need to be initialized.
@@ -55,23 +52,22 @@ class Transaction(Base):
         return f"<Transaction {str(self.uuid)[24:]}>"
 
 
-@dataclass
 class TransactionType(Base):
-    __tablename__ = db_config.table_names.transaction_types
+    __tablename__ = db_config.table.transaction_types
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.transaction_types))
+                        default=lambda: generate_uuid(db_config.table.transaction_types))
     name: str = Column(String(40), nullable=False, unique=True)
     description: str = Column(String(200), nullable=False)
     uses: dict = Column(JSON, nullable=False)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         from json import load
 
-        results = load(open(config.initialization.transactions_path, "r"))
-        for entry in results[db_config.table_names.transaction_types]:
+        results = load(open(init, "r"))
+        for entry in results[db_config.table.transaction_types]:
             session.add(TransactionType(**{key: UUID(entry[key]) if key.__contains__("uuid") else entry[key]
                                            for key in ["uuid", "name", "description", "uses"]}))
         return True
@@ -80,24 +76,23 @@ class TransactionType(Base):
         return f"<TransactionType {self.name}>"
 
 
-@dataclass
 class SourceType(Base):
-    __tablename__ = db_config.table_names.source_types
+    __tablename__ = db_config.table.source_types
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.source_types))
+                        default=lambda: generate_uuid(db_config.table.source_types))
     name: str = Column(String(40), nullable=False, unique=True)
     description: str = Column(String(200), nullable=True, unique=True)
     categories: list = Column(JSON, nullable=False)
     rewards: list = Column(JSON, nullable=False)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         from json import load
 
-        results = load(open(config.initialization.transactions_path, "r"))
-        for entry in results[db_config.table_names.source_types]:
+        results = load(open(init, "r"))
+        for entry in results[db_config.table.source_types]:
             session.add(SourceType(**{key: UUID(entry[key]) if key.__contains__("uuid") else entry[key]
                                       for key in ["uuid", "name", "description", "categories", "rewards"]}))
         return True
@@ -106,13 +101,12 @@ class SourceType(Base):
         return f"<SourceType {self.name}>"
 
 
-@dataclass
 class MaterialType(Base):
-    __tablename__ = db_config.table_names.material_types
+    __tablename__ = db_config.table.material_types
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.material_types))
+                        default=lambda: generate_uuid(db_config.table.material_types))
     name: str = Column(String(40), nullable=False, unique=True)
     description: str = Column(String(200), nullable=True, unique=True)
     sources: list = Column(JSON, nullable=False)
@@ -121,11 +115,11 @@ class MaterialType(Base):
     usages: list = Column(JSON, nullable=False)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         from json import load
 
-        results = load(open(config.initialization.transactions_path, "r"))
-        for entry in results[db_config.table_names.material_types]:
+        results = load(open(init, "r"))
+        for entry in results[db_config.table.material_types]:
             session.add(MaterialType(**{key: UUID(entry[key]) if key.__contains__("uuid") else entry[key]
                                         for key in ["uuid", "name", "description", "sources", "exchanges",
                                                     "exchange_results", "usages"]}))
@@ -135,24 +129,23 @@ class MaterialType(Base):
         return f"<MaterialType {self.name}>"
 
 
-@dataclass
 class ExchangeType(Base):
-    __tablename__ = db_config.table_names.exchange_types
+    __tablename__ = db_config.table.exchange_types
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.exchange_types))
+                        default=lambda: generate_uuid(db_config.table.material_types))
     name: str = Column(String(40), nullable=False, unique=True)
     description: str = Column(String(200), nullable=True)
     sources: list = Column(JSON, nullable=False)
     results: list = Column(JSON, nullable=False)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         from json import load
 
-        results = load(open(config.initialization.transactions_path, "r"))
-        for entry in results[db_config.table_names.exchange_types]:
+        results = load(open(init, "r"))
+        for entry in results[db_config.table.exchange_types]:
             session.add(ExchangeType(**{key: UUID(entry[key]) if key.__contains__("uuid") else entry[key]
                                         for key in ["uuid", "name", "description", "sources", "results"]}))
         return True
@@ -161,24 +154,23 @@ class ExchangeType(Base):
         return f"<ExchangeType {self.name}>"
 
 
-@dataclass
 class UsageType(Base):
-    __tablename__ = db_config.table_names.usage_types
+    __tablename__ = db_config.table.usage_types
 
     id: int = Column(Integer, primary_key=True)
     uuid: UUID = Column(Uuid, nullable=False, unique=True,
-                        default=lambda: generate_uuid(db_config.table_names.usage_types))
+                        default=lambda: generate_uuid(db_config.table.usage_types))
     name: str = Column(String(40), nullable=False, unique=True)
     description: str = Column(String(200), nullable=True)
     item: list = Column(JSON, nullable=False)
     results: list = Column(JSON, nullable=False)
 
     @staticmethod
-    def __database_init__(session: scoped_session):
+    def __database_init__(session: scoped_session, init: str):
         from json import load
 
-        results = load(open(config.initialization.transactions_path, "r"))
-        for entry in results[db_config.table_names.usage_types]:
+        results = load(open(init, "r"))
+        for entry in results[db_config.table.usage_types]:
             session.add(UsageType(**{key: UUID(entry[key]) if key.__contains__("uuid") else entry[key]
                                      for key in ["uuid", "name", "description", "item", "results"]}))
         return True

@@ -1,0 +1,20 @@
+{
+  "ratelimit.limits": {
+    "default": [
+      "5 per second",
+      "100 per minute"
+    ],
+    "admin": [
+      "3 per second",
+      "30 per minute"
+    ],
+    "authentication": [
+      "2 per second",
+      "20 per minute"
+    ],
+    "user": [
+      "3 per second",
+      "30 per minute"
+    ]
+  }
+}

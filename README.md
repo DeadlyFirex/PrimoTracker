@@ -34,4 +34,7 @@ Extended support for different database structures will be added later.
 - [flask-sqlalchemy](https://github.com/pallets/flask-sqlalchemy)
 - [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy)
 - [Flask-Limiter](https://github.com/alisaifee/flask-limiter)
+- [flask-marshmallow](https://github.com/marshmallow-code/flask-marshmallow)
+- [marshmallow-sqlalchemy](https://github.com/marshmallow-code/marshmallow-sqlalchemy)
+- [marshmallow](https://github.com/marshmallow-code/marshmallow)
 - [python_json_config](https://github.com/janehmueller/python-json-config)

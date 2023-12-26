@@ -1,0 +1,11 @@
+# Directories
+**/backup/
+**/.*/
+**/__pycache__/
+
+# Individual files
+**/README.md
+**/LICENSE
+**/SECURITY.md
+**/VERSION
+**/.gitignore
